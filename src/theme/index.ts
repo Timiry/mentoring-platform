@@ -12,7 +12,7 @@ export default (mode: PaletteMode) =>
       values: breakpoints,
     },
     typography: {
-      fontFamily: ["PF BeauSans Pro"].join(","),
+      fontFamily: ["Roboto"].join(","),
       fontSize: 14,
       H1Bold: {
         fontSize: "30px",
