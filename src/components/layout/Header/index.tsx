@@ -7,6 +7,7 @@ import LogoImage from "../../ui/Logo";
 import AdaptiveWrapper from "../AdaptiveWrapper";
 import MenuItem from "./components/MenuItem/index";
 import { HeaderContainer } from "./styles";
+import { Button } from "@mui/material";
 //import StyledLocationIcon from "./styles";
 
 const Header = () => {
@@ -15,7 +16,7 @@ const Header = () => {
       <HeaderContainer>
         <AdaptiveWrapper>
           <Box
-            height="100px"
+            height="75px"
             display="flex"
             alignItems="center"
             justifyContent="space-between"
@@ -26,7 +27,7 @@ const Header = () => {
               justifyContent="space-between"
             >
               <Box pt="20px" pb="10px" px="">
-                <LogoImage size="90px" />
+                <LogoImage size="60px" />
               </Box>
               {/* <Box py="">
                 <Link href="/" pl="20px" sx={{ textDecoration: "none" }}>
@@ -40,6 +41,11 @@ const Header = () => {
               <MenuItem title="Главная" href="/" />
               <MenuItem title="Мессенджер" href="/messenger" />
               <MenuItem title="Профиль" href="/profile" />
+              <Box pl="20px">
+                <Button variant="contained" href="/login">
+                  Войти
+                </Button>
+              </Box>
             </Box>
           </Box>
         </AdaptiveWrapper>

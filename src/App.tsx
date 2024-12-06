@@ -2,6 +2,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Route, Routes } from "react-router-dom";
 
 import MainPage from "./pages/Main";
+import RegisterPage from "./pages/Register";
 import LoginPage from "./pages/Login";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/Profile";
@@ -27,6 +28,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/messenger" element={<MessengerPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage/>} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ErrorBoundary>
