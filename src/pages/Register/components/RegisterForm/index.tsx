@@ -1,39 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Button, TextField, Typography, Paper } from '@mui/material';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import InvalidInputMessage from '../../../../components/InvalidInputMessage'
+import * as Yup from 'yup';
 
 const RegisterForm: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const initialValues = {
+    email: '',
+    login: '',
+    password: '',
+    confirmPassword: '',
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Некорректный адрес электронной почты').required('Обязательное поле'),
+    login: Yup.string().required('Обязательное поле'),
+    password: Yup.string()
+      .min(8, 'Пароль должен содержать минимум 8 символов')
+      .required('Обязательное поле'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password')], 'Пароли не совпадают')
+      .required('Обязательное поле'),
+  });
 
-    // Пример простейшей валидации
-    if (!email || !username || !password || !confirmPassword) {
-      setError('Пожалуйста, заполните все поля');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('Пароли должны совпадать');
-      return;
-    }
-
-    // Здесь вы можете добавить логику для отправки данных на сервер, например:
-    console.log('Регистрация:', { email, username, password });
-    
-    // После успешной регистрации можно очистить поля и показать сообщение об успехе
-    setEmail('');
-    setUsername('');
-    setPassword('');
-    setConfirmPassword('');
-    setSuccess('Регистрация прошла успешно!');
+  const handleSubmit = (values: typeof initialValues) => {
+    console.log('Регистрация:', values);
+    // логика для отправки данных на сервер
   };
 
   return (
@@ -47,62 +39,88 @@ const RegisterForm: React.FC = () => {
         padding: 4,
         maxWidth: 400,
         margin: 'auto',
-        mt: 8,
+        mt: 3,
         borderRadius: 2,
       }}
     >
       <Typography variant="h5" component="h1" gutterBottom>
         Регистрация
       </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Электронная почта"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          label="Логин"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <TextField
-          label="Пароль"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <TextField
-          label="Повторите пароль"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        {error && (
-          <Typography color="error" variant="body2" gutterBottom>
-            {error}
-          </Typography>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ handleChange, handleBlur }) => (
+          <Form>
+            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+              <ErrorMessage name="email" component={InvalidInputMessage} />
+            </Box>
+
+            <Field
+              name="email"
+              as={TextField}
+              label="Электронная почта"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            
+            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+              <ErrorMessage name="login" component={InvalidInputMessage} />
+            </Box>
+
+            <Field
+              name="login"
+              as={TextField}
+              label="Логин"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            
+            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+              <ErrorMessage name="password" component={InvalidInputMessage} />
+            </Box>
+
+            <Field
+              name="password"
+              as={TextField}
+              label="Пароль"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            
+            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+              <ErrorMessage name="confirmPassword" component={InvalidInputMessage} />
+            </Box>
+
+            <Field
+              name="confirmPassword"
+              as={TextField}
+              label="Повторите пароль"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Зарегистрироваться
+            </Button>
+          </Form>
         )}
-        {success && (
-          <Typography color="success.main" variant="body2" gutterBottom>
-            {success}
-          </Typography>
-        )}
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{marginY: "15px"}}>
-          Зарегистрироваться
-        </Button>
-      </form>
+      </Formik>
     </Box>
   );
 };

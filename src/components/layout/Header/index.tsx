@@ -16,7 +16,7 @@ const Header = () => {
       <HeaderContainer>
         <AdaptiveWrapper>
           <Box
-            height="100px"
+            height="75px"
             display="flex"
             alignItems="center"
             justifyContent="space-between"
@@ -27,7 +27,7 @@ const Header = () => {
               justifyContent="space-between"
             >
               <Box pt="20px" pb="10px" px="">
-                <LogoImage size="90px" />
+                <LogoImage size="60px" />
               </Box>
               {/* <Box py="">
                 <Link href="/" pl="20px" sx={{ textDecoration: "none" }}>

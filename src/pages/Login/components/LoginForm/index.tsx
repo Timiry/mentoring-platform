@@ -1,29 +1,23 @@
-// src/components/Auth.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Button, TextField, Typography, Paper, Link } from '@mui/material';
-//import { Link } from 'react-router-dom';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import InvalidInputMessage from '../../../../components/InvalidInputMessage';
+import * as Yup from 'yup';
 
 const LoginForm: React.FC = () => {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const initialValues = {
+    login: '',
+    password: '',
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const validationSchema = Yup.object().shape({
+    login: Yup.string().required('Обязательное поле'),
+    password: Yup.string().required('Обязательное поле'),
+  });
 
-    // Пример простейшей валидации
-    if (!login || !password) {
-      setError('Пожалуйста, заполните все поля');
-      return;
-    }
-
-    // Здесь вы можете добавить логику для отправки данных на сервер, например:
-    console.log('Отправка данных:', { login, password });
-    
-    // После успешной авторизации можно очистить поля
-    setLogin('');
-    setPassword('');
+  const handleSubmit = (values: typeof initialValues) => {
+    console.log('Вход:', values);
+    // логика для отправки данных на сервер
   };
 
   return (
@@ -37,47 +31,64 @@ const LoginForm: React.FC = () => {
         padding: 4,
         maxWidth: 400,
         margin: 'auto',
-        mt: 8,
+        mt: 3,
         borderRadius: 2,
       }}
     >
-      <Typography  variant='h5' gutterBottom> 
+      <Typography variant="h5" component="h1" gutterBottom>
         Вход в систему
       </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Логин"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={login}
-          onChange={(e) => setLogin(e.target.value)}
-        />
-        <TextField
-          label="Пароль"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {error && (
-          <Typography color="error" variant="body2" gutterBottom>
-            {error}
-          </Typography>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ handleChange, handleBlur }) => (
+          <Form >
+            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+              <ErrorMessage name="login" component={InvalidInputMessage} />
+            </Box>
+
+            <Field
+              name="login"
+              as={TextField}
+              label="Логин"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          
+            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+              <ErrorMessage name="password" component={InvalidInputMessage} />
+            </Box>
+
+            <Field
+              name="password"
+              as={TextField}
+              label="Пароль"
+              type="password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Войти
+            </Button>
+          </Form>
         )}
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{marginY: "15px"}}>
-          Войти
-        </Button>
-        <Box sx={{pt: '20px', textAlign: 'center'}}>
+      </Formik>
+      <Box sx={{pt: '20px', textAlign: 'center'}}>
             <Link href="/register" sx={{ textDecoration: 'none'}}>
                 <Typography variant='B4Regular' color='text.secondary'>
                     Зарегистрироваться
                 </Typography>
             </Link>
         </Box>
-      </form>
     </Box>
   );
 };
