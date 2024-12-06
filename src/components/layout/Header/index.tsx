@@ -7,6 +7,7 @@ import LogoImage from "../../ui/Logo";
 import AdaptiveWrapper from "../AdaptiveWrapper";
 import MenuItem from "./components/MenuItem/index";
 import { HeaderContainer } from "./styles";
+import { Button } from "@mui/material";
 //import StyledLocationIcon from "./styles";
 
 const Header = () => {
@@ -40,6 +41,11 @@ const Header = () => {
               <MenuItem title="Главная" href="/" />
               <MenuItem title="Мессенджер" href="/messenger" />
               <MenuItem title="Профиль" href="/profile" />
+              <Box pl="20px">
+                <Button variant="contained" href="/login">
+                  Войти
+                </Button>
+              </Box>
             </Box>
           </Box>
         </AdaptiveWrapper>
