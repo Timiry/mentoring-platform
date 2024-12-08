@@ -1,10 +1,18 @@
-import React from 'react';
-import { Box, Button, TextField, Typography, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, Paper, Snackbar } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import InvalidInputMessage from '../../../../components/InvalidInputMessage'
 import * as Yup from 'yup';
+import { useNavigate } from "react-router-dom";
+
+import InvalidInputMessage from '../../../../components/InvalidInputMessage';
+import Alert from '../../../../components/Alert';
+import { securityApi } from "../../../../api";
+import axios from '../../../../api';
 
 const RegisterForm: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
   const initialValues = {
     email: '',
     login: '',
@@ -23,9 +31,41 @@ const RegisterForm: React.FC = () => {
       .required('Обязательное поле'),
   });
 
+  const navigate = useNavigate();
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   const handleSubmit = (values: typeof initialValues) => {
-    console.log('Регистрация:', values);
-    // логика для отправки данных на сервер
+
+    const response = securityApi.registerUser(values);
+    response.then(console.log);
+    response.then((result) => {
+      if (result.status == 201) {
+        console.log(result);
+        navigate('/login');
+      }
+    })
+    .catch((error) => {
+      if (axios.isAxiosError(error)) {
+        // Выводим статус ошибки, если он доступен
+        if (error.response) {
+          console.error('Ошибка при входе:', error.response.status, error.response.data.message);
+          setMessage(`Ошибка: ${error.response.data.message} с кодом ${error.response.status}. Попробуйте снова.`);
+        } else {
+          console.error('Ошибка при входе:', error.message);
+          setMessage('Ошибка при соединении с сервером. Попробуйте снова.');
+        }
+      } else {
+        console.error('Неизвестная ошибка:', error);
+        setMessage('Произошла неизвестная ошибка. Попробуйте снова.');
+      }
+      setOpen(true);
+    });
   };
 
   return (
@@ -121,6 +161,12 @@ const RegisterForm: React.FC = () => {
           </Form>
         )}
       </Formik>
+      
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity='error'> 
+          {message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

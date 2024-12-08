@@ -1,10 +1,19 @@
-import React from 'react';
-import { Box, Button, TextField, Typography, Paper, Link } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, Paper, Link, Snackbar } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import InvalidInputMessage from '../../../../components/InvalidInputMessage';
 import * as Yup from 'yup';
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
+
+import InvalidInputMessage from '../../../../components/InvalidInputMessage';
+import Alert from '../../../../components/Alert';
+import { securityApi } from "../../../../api";
+import axios from '../../../../api';
 
 const LoginForm: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
   const initialValues = {
     login: '',
     password: '',
@@ -15,9 +24,40 @@ const LoginForm: React.FC = () => {
     password: Yup.string().required('Обязательное поле'),
   });
 
+  const navigate = useNavigate();
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   const handleSubmit = (values: typeof initialValues) => {
-    console.log('Вход:', values);
-    // логика для отправки данных на сервер
+    if (!localStorage.deviceId) localStorage.deviceId = uuidv4();
+    const response = securityApi.login(values, {deviceId: localStorage.deviceId});
+    response.then((result) => {
+      if (result.status === 200) {
+        localStorage.accessToken = result.data.accessToken;
+        console.log(result);
+        navigate('/profile');
+      }
+    })
+    .catch((error) => {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          console.error('Ошибка при входе:', error.response.status, error.response.data.message);
+          setMessage(`Ошибка: ${error.response.data.message} с кодом ${error.response.status}. Попробуйте снова.`);
+        } else {
+          console.error('Ошибка при входе:', error.message);
+          setMessage('Ошибка при соединении с сервером. Попробуйте снова.');
+        }
+      } else {
+        console.error('Неизвестная ошибка:', error);
+        setMessage('Произошла неизвестная ошибка. Попробуйте снова.');
+      }
+      setOpen(true);
+    });
   };
 
   return (
@@ -83,12 +123,18 @@ const LoginForm: React.FC = () => {
         )}
       </Formik>
       <Box sx={{pt: '20px', textAlign: 'center'}}>
-            <Link href="/register" sx={{ textDecoration: 'none'}}>
-                <Typography variant='B4Regular' color='text.secondary'>
-                    Зарегистрироваться
-                </Typography>
-            </Link>
-        </Box>
+          <Link href="/register" sx={{ textDecoration: 'none'}}>
+              <Typography variant='B4Regular' color='text.secondary'>
+                  Зарегистрироваться
+              </Typography>
+          </Link>
+      </Box>
+
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity='error'> 
+          {message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
