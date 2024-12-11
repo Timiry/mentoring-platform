@@ -65,7 +65,7 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
     return (
         <Box sx={{ padding: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-                <Avatar src={'http://localhost:8080' + mentor.avatarUrl} alt={`${mentor.firstName} ${mentor.lastName}`} sx={{ width: 100, height: 100, marginRight: 2 }} />
+                <Avatar src={'http://89.104.71.252:8080' + mentor.avatarUrl} alt={`${mentor.firstName} ${mentor.lastName}`} sx={{ width: 100, height: 100, marginRight: 2 }} />
                 <Box>
                     <Typography variant="h5">{`${mentor.firstName} ${mentor.lastName}`}</Typography>
                     <Typography variant="subtitle1">@{mentor.username}</Typography>
