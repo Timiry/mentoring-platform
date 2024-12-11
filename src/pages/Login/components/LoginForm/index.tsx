@@ -26,7 +26,7 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+    if (reason === 'clickaway' || event) {
       return;
     }
     setOpen(false);
@@ -38,6 +38,9 @@ const LoginForm: React.FC = () => {
     response.then((result) => {
       if (result.status === 200) {
         localStorage.accessToken = result.data.accessToken;
+        localStorage.refreshToken = result.data.refreshToken;
+        localStorage.accessTokenExpiry = result.data.accessTokenExpiry;
+        localStorage.refreshTokenExpiry = result.data.refreshTokenExpiry;
         console.log(result);
         navigate('/profile');
       }
@@ -115,7 +118,7 @@ const LoginForm: React.FC = () => {
               onBlur={handleBlur}
             />
             
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button type="submit" variant="contained" sx={{ bgcolor: 'button.primary'}} fullWidth>
               Войти
             </Button>
           </Form>

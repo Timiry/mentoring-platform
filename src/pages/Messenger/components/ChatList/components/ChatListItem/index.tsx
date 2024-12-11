@@ -10,7 +10,7 @@ interface ChatListItemProps {
 
 const ChatListItem: React.FC<ChatListItemProps> = ({ avatarUrl, firstName, lastName, onClick }) => {
     return (
-        <ListItem component={Box} onClick={onClick}>
+        <ListItem component={Box} onClick={onClick} style={{ cursor: 'pointer' }}>
             <ListItemAvatar>
                 <Avatar src={'http://localhost:8080' + avatarUrl} alt={`${firstName} ${lastName}`} />
             </ListItemAvatar>

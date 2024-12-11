@@ -13,7 +13,7 @@ export default {
         return response;
     },
     
-    updateUserByToken: async (userData: {firstName: string, lastName: string, phone: string}) => {
+    updateUserByToken: async (userData: {firstName: string | null, lastName: string | null, phone: string | null}) => {
         const response = await axios.put(`users/byId`, userData);
         return response;
     },

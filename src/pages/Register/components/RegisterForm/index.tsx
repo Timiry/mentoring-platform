@@ -33,7 +33,7 @@ const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+    if (reason === 'clickaway' || event) {
       return;
     }
     setOpen(false);
@@ -154,7 +154,7 @@ const RegisterForm: React.FC = () => {
               onBlur={handleBlur}
             />
 
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button type="submit" variant="contained" sx={{ bgcolor: 'button.primary'}} fullWidth>
               Зарегистрироваться
             </Button>
           </Form>

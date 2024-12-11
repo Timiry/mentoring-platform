@@ -24,12 +24,33 @@ export interface AccountData
     userStatus: string,
 }
 
-export interface MentorData
+export interface MentorDataToCreate
 {
-    "userId": number,
-    "shortAboutMe": string,
-    "longAboutMe": string,
-    "specializations": Array<string>,
+    userId: number,
+    shortAboutMe: string,
+    longAboutMe: string,
+    specializations: string[],
+}
+
+export interface RawMentorData
+{
+    userId: number,
+    shortAboutMe: string,
+    longAboutMe: string,
+    specializations: string,
+}
+
+export interface MentorDataToShow
+{
+    userId: number,
+    username: string,
+    firstName: string,
+    lastName: string,
+    shortAboutMe: string,
+    longAboutMe: string,
+    specializations: string[],
+    studentsCount: number,
+    avatarUrl: string,
 }
 
 export interface MessageData {

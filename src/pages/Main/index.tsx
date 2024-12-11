@@ -1,9 +1,11 @@
+import MentorCatalog from "./components/MentorCatalog";
 import MainLayout from "../../components/layout/Main";
+
 
 const MainPage = () => {
     return (
       <MainLayout>
-        Главная страница
+        <MentorCatalog />
       </MainLayout>
     );
 }
