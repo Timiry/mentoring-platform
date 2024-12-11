@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import WebSocketService from '../../../../WebSocketService'; // Импортируйте свой WebSocketService
+import WebSocketService from '../../../../services/WebSocketService'; // Импортируйте свой WebSocketService
 import { MessageData } from '../../../../types';
 import * as Stomp from 'stompjs';
 import ChatMessages from '../ChatMessages';
 import ChatInput from '../ChatInput';
 import { useParams } from 'react-router-dom';
 import { communicationApi } from '../../../../api';
+import chekTokens from '../../../../services/CheckTokens';
 
 const Chat = () => {
   const { chatId } = useParams<{ chatId: string }>();
@@ -31,6 +32,7 @@ const Chat = () => {
             alert('Чат не существует');
             return <div>Выберите чат из списка</div>;
         } else {
+            chekTokens();
             const response = communicationApi.getChatMessages(chatId, 0, 20);
             response.then((result) => {
                 if (result.status === 200){

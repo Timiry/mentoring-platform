@@ -7,6 +7,7 @@ import ChatList from "./components/ChatList";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { communicationApi, userApi } from "../../api";
+import chekTokens from "../../services/CheckTokens";
 
 const MessengerPage = () => {
   const { chatId } = useParams<{ chatId: string }>();
@@ -21,6 +22,7 @@ const MessengerPage = () => {
   useEffect(() => {
     const fetchChatData = async () => {
       try {
+        chekTokens();
         const userChats = await communicationApi.getUserChats();
         const chatDataPromises = userChats.data.map(async (chat: { chatId: string; members: number[] }) => {
           const userId = chat.members.find(id => id !== currentUserId);
@@ -28,9 +30,9 @@ const MessengerPage = () => {
             const user = await userApi.getUsers([userId])
             return {
               id: chat.chatId,
-              avatarUrl: user.data.photoUrl,
-              firstName: user.data.firstName,
-              lastName: user.data.lastName,
+              avatarUrl: user.data[0].photoUrl,
+              firstName: user.data[0].firstName,
+              lastName: user.data[0].lastName,
             } as ChatData;
           }
           return null; // Если нет подходящего участника, возвращаем null

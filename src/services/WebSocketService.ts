@@ -1,8 +1,6 @@
-//import SockJS from 'sockjs-client';
-//import axios from 'axios';
 import * as Stomp from 'stompjs';
-import { communicationApi } from './api';
-//import { error } from 'console';
+import { communicationApi } from '../api';
+import chekTokens from './CheckTokens';
 
 class WebSocketService {
     private stompClient: Stomp.Client | null = null;
@@ -26,6 +24,7 @@ class WebSocketService {
     }
 
     public createChat(jwtToken: string, callback: (message: Stomp.Message) => void, userId: number) {
+        chekTokens();
         const responseCreate = communicationApi.createChat();
         responseCreate.then ((result) => {
             if (result.status == 200) {

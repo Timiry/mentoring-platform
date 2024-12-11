@@ -154,7 +154,7 @@ const RegisterForm: React.FC = () => {
               onBlur={handleBlur}
             />
 
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button type="submit" variant="contained" sx={{ bgcolor: 'button.primary'}} fullWidth>
               Зарегистрироваться
             </Button>
           </Form>
