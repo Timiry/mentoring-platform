@@ -6,8 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import InvalidInputMessage from '../../../../components/InvalidInputMessage';
 import Alert from '../../../../components/Alert';
-import { securityApi } from "../../../../api";
-import axios from '../../../../api';
+import axios, { securityApi } from "../../../../api";
 
 const RegisterForm: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -54,10 +53,10 @@ const RegisterForm: React.FC = () => {
       if (axios.isAxiosError(error)) {
         // Выводим статус ошибки, если он доступен
         if (error.response) {
-          console.error('Ошибка при входе:', error.response.status, error.response.data.message);
+          console.error('Ошибка при регистрации:', error.response.status, error.response.data.message, error);
           setMessage(`Ошибка: ${error.response.data.message} с кодом ${error.response.status}. Попробуйте снова.`);
         } else {
-          console.error('Ошибка при входе:', error.message);
+          console.error('Ошибка при регистрации:', error.message);
           setMessage('Ошибка при соединении с сервером. Попробуйте снова.');
         }
       } else {

@@ -1,57 +1,34 @@
-// import Typography from "@mui/material/Typography";
-// import Link from "@mui/material/Link";
-import Box from "@mui/material/Box";
+import { AppBar, Toolbar, Button, Box, Link } from '@mui/material';
 
-import LogoImage from "../../ui/Logo";
+//import LogoImage from "../../ui/Logo";
 
-import AdaptiveWrapper from "../AdaptiveWrapper";
-import MenuItem from "./components/MenuItem/index";
-import { HeaderContainer } from "./styles";
-import { Button } from "@mui/material";
-//import StyledLocationIcon from "./styles";
-
-const Header = () => {
-  return (
-    <>
-      <HeaderContainer>
-        <AdaptiveWrapper>
-          <Box
-            height="75px"
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Box 
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Box pt="20px" pb="10px" px="">
-                <LogoImage size="60px" />
-              </Box>
-              {/* <Box py="">
-                <Link href="/" pl="20px" sx={{ textDecoration: "none" }}>
-                  <Typography variant="B1Bold" color="text.primary">
-                    MentorIn
-                  </Typography>
-                </Link>
-              </Box> */}
-            </Box>
-            <Box display="flex" alignItems="center">
-              <MenuItem title="Главная" href="/" />
-              <MenuItem title="Мессенджер" href="/messenger" />
-              <MenuItem title="Профиль" href="/profile" />
-              <Box pl="20px">
-                <Button variant="contained" href="/login">
-                  Войти
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-        </AdaptiveWrapper>
-      </HeaderContainer>
-    </>
-  );
+const Header = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
+  isAuthenticated = true;
+    return (
+        <AppBar position="fixed" sx={{ backgroundColor: '#FFFFFF' }}>
+            <Toolbar>
+                <Box sx={{ flexGrow: 1 }}>
+                    <Link href="/" sx={{ textDecoration: 'none',  color: 'button.primary'}}>
+                        <img src='/logo.png' width='50px' style={{ paddingTop: '4px' }} />
+                        <img src='/logo_text.png' height='50px' style={{ paddingTop: '4px' }} />
+                    </Link>
+                </Box>
+                {isAuthenticated ? (
+                    <Box>
+                        <Button sx={{ color: 'button.primary'}} href="/catalog">Каталог</Button>
+                        <Button sx={{ color: 'button.primary'}} href="/messenger">Мессенджер</Button>
+                        <Button sx={{ color: 'button.primary'}} href="/profile">Профиль</Button>
+                        <Button sx={{ color: 'button.primary'}} href="/become-mentor">Стать ментором</Button>
+                    </Box>
+                ) : (
+                    <Box>
+                        <Button href="/login">Вход</Button>
+                        <Button href="/register">Регистрация</Button>
+                    </Box>
+                )}
+            </Toolbar>
+        </AppBar>
+    );
 };
 
 export default Header;

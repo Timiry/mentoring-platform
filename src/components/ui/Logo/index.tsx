@@ -10,6 +10,7 @@ const LogoImage = ({ size, ...restProps }: LogoImageProps) => {
       component="img"
       image="/logo_with_text.png"
       height={size}
+      width={size}
       {...restProps}
     />
   );
