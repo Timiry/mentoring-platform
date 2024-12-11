@@ -13,7 +13,3 @@ export const MenuContainer = styled(Box)(({ theme }) => ({
   boxShadow: `0 4px 8px 0 ${theme.palette.general.shadow}`,
   fontStyle: "oblique",
 }));
-
-// export const StyledLocationIcon = styled(LocationIcon)(({ theme }) => ({
-//   ...stylesToColorSvg(theme.palette.icon.secondary),
-// }));

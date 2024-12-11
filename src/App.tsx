@@ -27,6 +27,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/messenger" element={<MessengerPage />} />
+        <Route path="/messenger/:chatId" element={<MessengerPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage/>} />
         <Route path="*" element={<NotFoundPage />} />

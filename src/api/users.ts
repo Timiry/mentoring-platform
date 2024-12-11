@@ -2,12 +2,12 @@ import axios from "./index";
 
 
 export default {
-    getUser: async (id: number) => {
-        const response = await axios.get(`users/byId${id}`);
+    getUser: async () => {
+        const response = await axios.get(`users/byId`);
         return response;
     },
     
-    getUsers: async (ids: Array<number>) => {
+    getUsers: async (ids: number[]) => {
         const stringIds = ids.join(',');
         const response = await axios.get(`users?ids=${stringIds}`);
         return response;

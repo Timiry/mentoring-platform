@@ -32,3 +32,21 @@ export interface MentorData
     "specializations": Array<string>,
 }
 
+export interface MessageData {
+    id?: string,
+    chatId?: string,
+    senderId: number,
+    content: {
+        message: string;
+        type: string, // 'SIMPLE_MESSAGE' или 'ATTACHMENT'
+    },
+    messageType?: string,
+    sentAt: string,
+}
+
+export interface ChatData {
+    id: string;
+    avatarUrl: string;
+    firstName: string;
+    lastName: string;
+}

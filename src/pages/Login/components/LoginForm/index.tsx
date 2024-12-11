@@ -7,8 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import InvalidInputMessage from '../../../../components/InvalidInputMessage';
 import Alert from '../../../../components/Alert';
-import { securityApi } from "../../../../api";
-import axios from '../../../../api';
+import axios, { securityApi } from "../../../../api";
 
 const LoginForm: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -46,7 +45,7 @@ const LoginForm: React.FC = () => {
     .catch((error) => {
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          console.error('Ошибка при входе:', error.response.status, error.response.data.message);
+          console.error('Ошибка при входе:', error.response.status, error.response.data.message, error);
           setMessage(`Ошибка: ${error.response.data.message} с кодом ${error.response.status}. Попробуйте снова.`);
         } else {
           console.error('Ошибка при входе:', error.message);

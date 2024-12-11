@@ -151,7 +151,7 @@ export default (mode: PaletteMode) =>
               error: "#C2030E",
             },
             button: {
-              primary: "#1FB0EE",
+              primary: "#2C776F",
               primaryHover: "#80CDEE",
               primaryDisabled: alpha("#1FB0EE", 0.6),
               secondary: "#1FB0EE",

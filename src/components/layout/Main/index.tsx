@@ -8,9 +8,9 @@ import AdaptiveWrapper from "../AdaptiveWrapper";
 const MainLayout = ({ children }: PropsWithChildren) => {
   return (
     <>
-      <Header />
+      <Header isAuthenticated={true}/>
       <AdaptiveWrapper>
-        <Box pt="60px">{children}</Box>
+        <Box pt="70px">{children}</Box>
       </AdaptiveWrapper>
     </>
   );
