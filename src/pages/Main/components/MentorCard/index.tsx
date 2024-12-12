@@ -34,7 +34,7 @@ const MentorCard: React.FC<MentorCardProps> = ({ mentor }) => {
         >
             <Avatar
                 alt={`${mentor.firstName || ''} ${mentor.lastName || ''}`}
-                src={'http://89.104.71.252:8080' + mentor.avatarUrl || ''}
+                src={'https://mentorin-lab.ru' + mentor.avatarUrl || ''}
                 sx={{ width: 100, height: 100, marginBottom: 2 }}
                 onClick={handleOpen} 
             />

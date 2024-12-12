@@ -12,7 +12,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ avatarUrl, firstName, lastN
     return (
         <ListItem component={Box} onClick={onClick} style={{ cursor: 'pointer' }}>
             <ListItemAvatar>
-                <Avatar src={'http://89.104.71.252:8080' + avatarUrl} alt={`${firstName} ${lastName}`} />
+                <Avatar src={'https://mentorin-lab.ru' + avatarUrl} alt={`${firstName} ${lastName}`} />
             </ListItemAvatar>
             <ListItemText primary={`${firstName} ${lastName}`} />
         </ListItem>

@@ -78,7 +78,7 @@ const Profile: React.FC = () => {
             <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
               <Avatar
                 alt="User Photo"
-                src={photo ? URL.createObjectURL(photo) : 'http://89.104.71.252:8080' + initialValues.photoUrl || ''}
+                src={photo ? URL.createObjectURL(photo) : 'https://mentorin-lab.ru' + initialValues.photoUrl || ''}
                 sx={{ width: 100, height: 100 }}
               />
               <input
