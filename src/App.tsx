@@ -10,6 +10,7 @@ import MessengerPage from "./pages/Messenger"
 
 import Button from "@mui/material/Button";
 import CatalogPage from "./pages/Catalog";
+import LogoutPage from "./pages/Logout/components/LogoutForm";
 
 function App() {
   
@@ -30,6 +31,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/messenger" element={<MessengerPage />} />
         <Route path="/messenger/:chatId" element={<MessengerPage />} />
+        <Route path="/logout" element={<LogoutPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage/>} />
         <Route path="*" element={<NotFoundPage />} />
