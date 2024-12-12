@@ -9,6 +9,7 @@ import ProfilePage from "./pages/Profile";
 import MessengerPage from "./pages/Messenger"
 
 import Button from "@mui/material/Button";
+import CatalogPage from "./pages/Catalog";
 
 function App() {
   
@@ -25,6 +26,7 @@ function App() {
     >
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/messenger" element={<MessengerPage />} />
         <Route path="/messenger/:chatId" element={<MessengerPage />} />
