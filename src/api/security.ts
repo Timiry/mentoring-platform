@@ -4,7 +4,9 @@ import axios from "./index";
 
 export default {
     registerUser: async (userData: RegisterData) => {
-        const response = await axios.post(`/auth/register`, userData);
+        const axiosInstance = axios.create();
+        delete axiosInstance.defaults.headers.common['Authorization'];
+        const response = await axiosInstance.post(`/auth/register`, userData);
         return response;
     },
     

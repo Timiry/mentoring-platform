@@ -9,7 +9,7 @@ class WebSocketService {
 
     public connect(chatId: string, jwtToken: string, callback: (message: Stomp.Message) => void): void {
         this.token = 'Bearer ' + jwtToken;
-        const socket = new window.SockJS('http://localhost:8080/ws/chat?token=' + this.token);
+        const socket = new window.SockJS('https://mentorin-lab.ru/ws/chat?token=' + this.token);
         this.stompClient = Stomp.over(socket);
 
         this.stompClient.connect({ 'Authorization': this.token }, (frame) => {

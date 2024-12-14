@@ -12,9 +12,10 @@ const Header = () => {
                 </Box>
                 { localStorage.accessToken && new Date(localStorage.refreshTokenExpiry) > new Date()  ? (
                     <Box>
-                        <Button sx={{ color: 'button.primary'}} href="/">Каталог</Button>
+                        <Button sx={{ color: 'button.primary'}} href="/catalog">Каталог</Button>
                         <Button sx={{ color: 'button.primary'}} href="/messenger">Мессенджер</Button>
                         <Button sx={{ color: 'button.primary'}} href="/profile">Профиль</Button>
+                        <Button sx={{ color: 'button.primary'}} href="/logout">Выйти</Button>
                     </Box>
                 ) : ( 
                     <Box>

@@ -49,7 +49,7 @@ const MessengerPage = () => {
     };
 
     fetchChatData();
-  }, []);
+  });
 
   if (loading) return <Typography>Загрузка...</Typography>;
   if (error) return <Typography color="error">{error}</Typography>;
