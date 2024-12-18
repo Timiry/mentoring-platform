@@ -21,7 +21,7 @@ export interface AccountData
     address: string | null,
     photoUrl: string | null,
     registrationDate: string,
-    userStatus: string,
+    userStatus?: string,
 }
 
 export interface MentorDataToCreate
@@ -58,8 +58,8 @@ export interface MessageData {
     chatId?: string,
     senderId: number,
     content: {
-        message: string;
-        type: string, // 'SIMPLE_MESSAGE' или 'ATTACHMENT'
+        message?: string,
+        fileUrl?: string,
     },
     messageType?: string,
     sentAt: string,

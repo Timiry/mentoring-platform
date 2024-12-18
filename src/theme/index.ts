@@ -3,7 +3,7 @@ import { PaletteMode, alpha, createTheme } from "@mui/material";
 export const breakpoints = {
   mobile: 0,
   tablet: 550,
-  desktop: 940,
+  desktop: 1100,
 };
 
 export default (mode: PaletteMode) =>
@@ -67,13 +67,13 @@ export default (mode: PaletteMode) =>
       },
       B6Medium: {
         fontSize: "14px",
-        fontWeight: 500,
+        fontWeight: 400,
         lineHeight: "20px",
       },
       B7Regular: {
-        fontSize: "14px",
+        fontSize: "12px",
         fontWeight: 400,
-        lineHeight: "20px",
+        lineHeight: "12px",
       },
       B8SemiBold: {
         fontSize: "14px",

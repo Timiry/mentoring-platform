@@ -6,6 +6,8 @@ import { accountApi } from '../../../api';
 import { AccountData } from '../../../types';
 import InvalidInputMessage from '../../../components/InvalidInputMessage';
 import chekTokens from '../../../services/CheckTokens';
+import { Snackbar } from '@mui/material';
+import Alert from '../../../components/Alert';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required('Обязательное поле'),
@@ -19,6 +21,9 @@ const Profile: React.FC = () => {
   const [initialValues, setInitialValues] = useState<AccountData | null>(null);
   const [photo, setPhoto] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+
  
 
   useEffect(() => {
@@ -52,11 +57,21 @@ const Profile: React.FC = () => {
         await accountApi.addAvatar(photo);
       }
 
-      alert('Данные успешно обновлены!');
+      setMessage("Данные успешно обновлены");
+      setOpen(true);
     } catch (error) {
       console.error('Ошибка при обновлении данных пользователя:', error);
+      setMessage("Ошибка при обновлении данных пользователя");
+      setOpen(true);
     }
   };
+
+  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+};
 
   if (error) return <Typography color="error">{error}</Typography>;
   if (!initialValues) {
@@ -78,7 +93,7 @@ const Profile: React.FC = () => {
             <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
               <Avatar
                 alt="User Photo"
-                src={photo ? URL.createObjectURL(photo) : 'https://mentorin-lab.ru' + initialValues.photoUrl || ''}
+                src={photo ? URL.createObjectURL(photo) : initialValues.photoUrl || ''}
                 sx={{ width: 100, height: 100 }}
               />
               <input
@@ -143,7 +158,7 @@ const Profile: React.FC = () => {
               Статус: {initialValues.userStatus}
             </Typography>
             <Typography variant="body2">
-              Дата регистрации: {initialValues.registrationDate}
+              Дата регистрации: {initialValues.registrationDate.toString().replace(new RegExp(',', 'g'), '-')}
             </Typography>
 
             <Button type="submit" variant="contained" sx={{ bgcolor: 'button.primary', mt: 3}} fullWidth >
@@ -152,6 +167,11 @@ const Profile: React.FC = () => {
           </Form>
         )}
       </Formik>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity='success'> 
+          {message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

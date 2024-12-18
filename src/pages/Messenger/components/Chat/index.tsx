@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import WebSocketService from '../../../../services/WebSocketService'; // Импортируйте свой WebSocketService
+import WebSocketService from '../../../../services/WebSocketService';
 import { MessageData } from '../../../../types';
 import * as Stomp from 'stompjs';
 import ChatMessages from '../ChatMessages';
@@ -8,12 +8,12 @@ import ChatInput from '../ChatInput';
 import { useParams } from 'react-router-dom';
 import { communicationApi } from '../../../../api';
 import chekTokens from '../../../../services/CheckTokens';
+import ChatHeader from '../ChatHeader';
 
 const Chat = () => {
   const { chatId } = useParams<{ chatId: string }>();
   const [messages, setMessages] = useState<MessageData[]>([]);
   const [input, setInput] = useState<string>('');
-  const [attachment, setAttachment] = useState<File | null>(null);
 
   const idFromToken = (token: string) => {
     return JSON.parse(atob(token.split('.')[1])).sub;
@@ -64,40 +64,29 @@ const Chat = () => {
         senderId: socketMessage.body.userId,
         content: {
             message: socketMessage.body.message,
-            type: socketMessage.type == 'MESSAGE' ? 'SIMPLE_MESSAGE' : 'ATTACHMENT',
+            fileUrl: socketMessage.body.attachmentUrl,
         },
+        messageType: socketMessage.type == 'MESSAGE' ? 'SIMPLE_MESSAGE' : 'ATTACHMENT',
         sentAt: new Date().toLocaleTimeString().substring(0, 5),
     }
     setMessages((prevMessages) => [...prevMessages, message]);
   };
 
   const handleSend = () => {
-      if (input.trim() || attachment) {
-          if(!chatId) return;
-          WebSocketService.sendMessage(chatId, input); // Отправьте сообщение через WebSocket
-          setInput('');
-          setAttachment(null);
-      }
+    if(chatId){
+        if (input.trim()) {
+            WebSocketService.sendMessage(chatId, input); // Отправьте сообщение через WebSocket
+            setInput('');
+        }
+    }
   };
 
-//   const handleSend = () => {
-//       if (input.trim() || attachment) {
-//           //WebSocketService.sendMessage(chatId, input); // Отправьте сообщение через WebSocket
-//           const message = {
-//             type: attachment ? 'ATTACHMENT' : 'MESSAGE',
-//             body: {
-//               userId: '2',
-//               message: input || chatId,
-//               attachmentUrl: null,
-//             },
-//           };
-//           setMessages((prevMessages) => [...prevMessages, message]);
-//           setInput('');
-//           setAttachment(null);
-//       }
-//   };
-
-
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Предотвращаем переход на новую строку
+        handleSend(); // Отправляем сообщение
+    }
+};
 
   return (
       <Box sx={{ 
@@ -108,13 +97,14 @@ const Chat = () => {
             flexGrow: 1
             }}
         >
+          <ChatHeader></ChatHeader>
           <ChatMessages messages={messages} currentUserId={currentUserId} />
           <ChatInput
               input={input}
               setInput={setInput}
-              attachment={attachment}
-              setAttachment={setAttachment}
               handleSend={handleSend}
+              handleKeyDown={handleKeyDown}
+              chatId={chatId || ''}
           />
       </Box>
   );

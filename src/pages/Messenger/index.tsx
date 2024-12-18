@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
-//import { communicationApi } from "../../api";
 import MainLayout from "../../components/layout/Main";
 import { ChatData } from "../../types";
 import Chat from "./components/Chat";
 import ChatList from "./components/ChatList";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
-import { communicationApi, userApi } from "../../api";
+import { communicationApi } from "../../api";
 import chekTokens from "../../services/CheckTokens";
+import { AccountData } from "../../types";
 
 const MessengerPage = () => {
   const { chatId } = useParams<{ chatId: string }>();
-  const [chats, setChats] = useState<ChatData[]>([]); // Замените any на ваш тип чатов
+  const [chats, setChats] = useState<ChatData[]>([]);
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -24,15 +24,17 @@ const MessengerPage = () => {
       try {
         chekTokens();
         const userChats = await communicationApi.getUserChats();
-        const chatDataPromises = userChats.data.map(async (chat: { chatId: string; members: number[] }) => {
-          const userId = chat.members.find(id => id !== currentUserId);
-          if (userId) {
-            const user = await userApi.getUsers([userId])
+
+        const chatDataPromises = userChats.data.content.map(async (chat: { chatId: string; members: number[] }) => {
+          const members = await communicationApi.getChatUsers(chat.chatId);
+          const member = members.data.content.find((m: AccountData) => m.id !== currentUserId);
+
+          if (member) {
             return {
               id: chat.chatId,
-              avatarUrl: user.data[0].photoUrl,
-              firstName: user.data[0].firstName,
-              lastName: user.data[0].lastName,
+              avatarUrl: member.photoUrl,
+              firstName: member.firstName,
+              lastName: member.lastName,
             } as ChatData;
           }
           return null; // Если нет подходящего участника, возвращаем null
@@ -49,12 +51,11 @@ const MessengerPage = () => {
     };
 
     fetchChatData();
-  });
+  }, [chatId, currentUserId]);
 
-  if (loading) return <Typography>Загрузка...</Typography>;
-  if (error) return <Typography color="error">{error}</Typography>;
-  
-  
+  if (loading) return (<MainLayout><Box sx={{ display: 'flex', height: `calc(100vh - 80px)`}}><Typography>Загрузка...</Typography></Box></MainLayout>);
+  if (loading) return (<MainLayout><Box sx={{ display: 'flex', height: `calc(100vh - 80px)`}}><Typography color="error">{error}</Typography></Box></MainLayout>);
+
 
   const handleChatSelect = (chatId: string) => {
     navigate(`/messenger/${chatId}`);

@@ -22,7 +22,7 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
             
             if (response.status === 200) {
                 console.log(response);
-                const chats = response.data;
+                const chats = response.data.content;
                 let chatFound = false;
     
                 for (const chat of chats) {
@@ -65,7 +65,7 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
     return (
         <Box sx={{ padding: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-                <Avatar src={'https://mentorin-lab.ru' + mentor.avatarUrl} alt={`${mentor.firstName} ${mentor.lastName}`} sx={{ width: 100, height: 100, marginRight: 2 }} />
+                <Avatar src={mentor.avatarUrl} alt={`${mentor.firstName} ${mentor.lastName}`} sx={{ width: 100, height: 100, marginRight: 2 }} />
                 <Box>
                     <Typography variant="h5">{`${mentor.firstName} ${mentor.lastName}`}</Typography>
                     <Typography variant="subtitle1">@{mentor.username}</Typography>

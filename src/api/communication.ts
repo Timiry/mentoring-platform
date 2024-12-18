@@ -7,7 +7,7 @@ export default {
     },
     
     inviteUserToChat: async (chatId: string, userId: number) => {
-        const response = await axios.post(`chats/${chatId}/invite?userId=${userId}`);
+        const response = await axios.post(`/chats/${chatId}/invite?userId=${userId}`);
         return response;
     },
     
@@ -23,17 +23,17 @@ export default {
     },
     
     getUserChats: async () => {
-        const response = await axios.get(`chats/user`);
+        const response = await axios.get(`/chats`);
         return response;
     },
     
     getChatUsers: async (chatId: string) => {
-        const response = await axios.get(`chats/${chatId}/users`);
+        const response = await axios.get(`/chats/${chatId}/users`);
         return response;
     },
     
     getChatMessages: async (chatId: string, page: number, size: number) => {
-        const response = await axios.get(`messages/${chatId}?page=${page}&size=${size}`);
+        const response = await axios.get(`/messages/${chatId}?page=${page}&size=${size}`);
         return response;
     }
 }

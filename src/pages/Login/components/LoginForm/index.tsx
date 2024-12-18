@@ -25,27 +25,26 @@ const LoginForm: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway' || event) {
+  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
       return;
     }
     setOpen(false);
   };
 
-  const handleSubmit = (values: typeof initialValues) => {
+  const handleSubmit = async (values: typeof initialValues) => {
     if (!localStorage.deviceId) localStorage.deviceId = uuidv4();
-    const response = securityApi.login(values, {deviceId: localStorage.deviceId});
-    response.then((result) => {
+    try {
+      const result = await securityApi.login(values, { deviceId: localStorage.deviceId });
       if (result.status === 200) {
-        localStorage.accessToken = result.data.accessToken;
-        localStorage.refreshToken = result.data.refreshToken;
-        localStorage.accessTokenExpiry = result.data.accessTokenExpiry;
-        localStorage.refreshTokenExpiry = result.data.refreshTokenExpiry;
-        console.log(result);
-        navigate('/profile');
+          localStorage.accessToken = result.data.accessToken;
+          localStorage.refreshToken = result.data.refreshToken;
+          localStorage.accessTokenExpiry = result.data.accessTokenExpiry;
+          localStorage.refreshTokenExpiry = result.data.refreshTokenExpiry;
+          console.log(result);
+          navigate('/');
       }
-    })
-    .catch((error) => {
+  } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
           console.error('Ошибка при входе:', error.response.status, error.response.data.message, error);
@@ -59,7 +58,7 @@ const LoginForm: React.FC = () => {
         setMessage('Произошла неизвестная ошибка. Попробуйте снова.');
       }
       setOpen(true);
-    });
+    };
   };
 
   return (

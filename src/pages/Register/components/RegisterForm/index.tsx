@@ -32,8 +32,8 @@ const RegisterForm: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway' || event) {
+  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
       return;
     }
     setOpen(false);
