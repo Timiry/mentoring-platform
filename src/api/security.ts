@@ -32,7 +32,7 @@ export default {
     refresh: async () => {
         const response = await axios.post(`/auth/refresh`, null, {
             headers: {
-                'Authorization': 'Bearer' + localStorage.refreshToken
+                'Authorization': 'Bearer ' + localStorage.refreshToken
             },
         });
         return response;

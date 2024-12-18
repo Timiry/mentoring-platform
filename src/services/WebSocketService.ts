@@ -9,7 +9,7 @@ class WebSocketService {
 
     public connect(chatId: string, jwtToken: string, callback: (message: Stomp.Message) => void): void {
         this.token = 'Bearer ' + jwtToken;
-        const socket = new window.SockJS('https://mentorin-lab.ru/ws/chat?token=' + this.token);
+        const socket = new window.SockJS(import.meta.env.VITE_DEV_URL + '/ws/chat?token=' + this.token);
         this.stompClient = Stomp.over(socket);
 
         this.stompClient.connect({ 'Authorization': this.token }, (frame) => {
@@ -53,6 +53,23 @@ class WebSocketService {
             };
             this.stompClient.send(`/app/${chatId}/chat.sendMessage`, {}, JSON.stringify(message));
         }
+    }
+
+    public connectToUserTopic(jwtToken: string, userId: number, callback: (message: Stomp.Message) => void) {
+        this.token = 'Bearer ' + jwtToken;
+        const socket = new window.SockJS('http://localhost:8080/ws/chat?token=' + this.token);
+        console.log("const socket = new SockJS('http://localhost:8080/ws/chat');")
+        this.stompClient = Stomp.over(socket);
+        
+        this.stompClient.connect({ 'Authorization': this.token }, (frame) => {
+            console.log('Connected: ' + frame);
+            console.log(`userId when connecting: ${userId}`)
+            if (!this.subscriptions[userId.toString()]) {
+                this.subscriptions[userId.toString()] = this.stompClient?.subscribe(`/topic/user/${userId}`, callback);
+            }
+        }, (error) => {
+            console.error('Error connecting to WebSocket:', error);
+        });
     }
 
     public disconnect(): void {

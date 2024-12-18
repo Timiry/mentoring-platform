@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = import.meta.env.VITE_DEV_URL;
+axios.defaults.baseURL = import.meta.env.VITE_DEV_URL + '/api/v1';
 axios.defaults.headers.common["Authorization"] = 'Bearer ' + localStorage.accessToken;
 axios.defaults.headers.common["Content-Type"] = "application/json"
 axios.defaults.headers.common["Accept"] = "*/*"

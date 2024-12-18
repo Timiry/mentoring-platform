@@ -1,5 +1,5 @@
 import React from 'react';
-import { List } from '@mui/material';
+import { Box, List, Typography } from '@mui/material';
 import ChatListItem from './components/ChatListItem'; // Импортируйте компонент ChatListItem
 
 interface ChatListProps {
@@ -9,7 +9,7 @@ interface ChatListProps {
 
 const ChatList: React.FC<ChatListProps> = ({ chats, onChatSelect }) => {
     return (
-        <List sx={{ 
+        <Box sx={{ 
             width: '280px', 
             flexGrow: 0,
             border: '1px solid #ccc', 
@@ -30,16 +30,22 @@ const ChatList: React.FC<ChatListProps> = ({ chats, onChatSelect }) => {
                 backgroundColor: '#f1f1f1', // Цвет фона полосы прокрутки
             },
         }}>
-            {chats.map((chat) => (
-                <ChatListItem
-                    key={chat.id}
-                    avatarUrl={chat.avatarUrl}
-                    firstName={chat.firstName}
-                    lastName={chat.lastName}
-                    onClick={() => onChatSelect(chat.id)} // Передаем id чата при клике
-                />
-            ))}
-        </List>
+            <Box p={'16px'} ml={1}>
+                <Typography>Чаты</Typography>
+            </Box>
+            <List sx={{p: 0}}>
+                {chats.map((chat) => (
+                    <ChatListItem
+                        key={chat.id}
+                        id={chat.id}
+                        avatarUrl={chat.avatarUrl}
+                        firstName={chat.firstName}
+                        lastName={chat.lastName}
+                        onClick={() => onChatSelect(chat.id)} // Передаем id чата при клике
+                    />
+                ))}
+            </List>
+        </Box>
     );
 };
 
