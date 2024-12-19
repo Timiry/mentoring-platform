@@ -28,7 +28,7 @@ const MentorCatalog: React.FC = () => {
     }, [searchTerm]);
 
     return (
-      <Box sx={{ padding: 2 }}>
+      <Box sx={{ padding: 2, mb: 8 }}>
       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mb={3}>
         <Typography variant="h4">
             Каталог менторов
@@ -48,16 +48,15 @@ const MentorCatalog: React.FC = () => {
       <Box 
           sx={{ 
               display: 'flex', 
-              flexWrap: 'wrap', 
-              gap: 2 
+              flexWrap: 'wrap',
+              gap: 3 
           }}
       >
           {mentors.map((mentor) => (
               <Box 
                   key={mentor.avatarUrl} 
-                  sx={{ 
-                      flex: '1 1 calc(33.33% - 16px)', // 3 колонки с учетом отступов
-                      maxWidth: 'calc(33.33% - 16px)' 
+                  sx={{
+                    width: 'calc(33.33% - 16px)' 
                   }}
               >
                   <MentorCard mentor={mentor} />
