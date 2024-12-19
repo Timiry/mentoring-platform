@@ -57,8 +57,7 @@ class WebSocketService {
 
     public connectToUserTopic(jwtToken: string, userId: number, callback: (message: Stomp.Message) => void) {
         this.token = 'Bearer ' + jwtToken;
-        const socket = new window.SockJS('http://localhost:8080/ws/chat?token=' + this.token);
-        console.log("const socket = new SockJS('http://localhost:8080/ws/chat');")
+        const socket = new window.SockJS(import.meta.env.VITE_DEV_URL + '/ws/chat?token=' + this.token);
         this.stompClient = Stomp.over(socket);
         
         this.stompClient.connect({ 'Authorization': this.token }, (frame) => {

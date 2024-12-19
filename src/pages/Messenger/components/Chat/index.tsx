@@ -38,7 +38,7 @@ const Chat = () => {
                 if (result.status === 200){
                     const msgs = result.data.content.map( (msg: MessageData) => ({
                         ... msg,
-                        sentAt: msg.sentAt.substring(11, 16),
+                        sentAt: new Date(msg.sentAt + 'Z').toLocaleTimeString().substring(0, 5),
                     }));
                     console.log(msgs);
                     setMessages(msgs.reverse());
