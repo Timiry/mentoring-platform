@@ -4,7 +4,7 @@ import RegisterForm from "./components/RegisterForm";
 const RegisterPage: React.FC = () => {
   return (
     <MainLayout>
-        <RegisterForm/>
+      <RegisterForm />
     </MainLayout>
   );
 };

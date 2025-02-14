@@ -1,18 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography, Paper, Avatar } from '@mui/material';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { accountApi } from '../../../api';
-import { AccountData } from '../../../types';
-import InvalidInputMessage from '../../../components/InvalidInputMessage';
-import chekTokens from '../../../services/CheckTokens';
-import { Snackbar } from '@mui/material';
-import Alert from '../../../components/Alert';
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Avatar,
+} from "@mui/material";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { accountApi } from "../../../api";
+import { AccountData } from "../../../types";
+import InvalidInputMessage from "../../../components/InvalidInputMessage";
+import chekTokens from "../../../services/CheckTokens";
+import { Snackbar } from "@mui/material";
+import Alert from "../../../components/Alert";
 
 const validationSchema = Yup.object().shape({
-  username: Yup.string().required('Обязательное поле'),
-  firstName: Yup.string().required('Обязательное поле'),
-  lastName: Yup.string().required('Обязательное поле'),
+  username: Yup.string().required("Обязательное поле"),
+  firstName: Yup.string().required("Обязательное поле"),
+  lastName: Yup.string().required("Обязательное поле"),
   phone: Yup.string().nullable(),
   address: Yup.string().nullable(),
 });
@@ -22,9 +29,7 @@ const Profile: React.FC = () => {
   const [photo, setPhoto] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
-
- 
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,8 +38,8 @@ const Profile: React.FC = () => {
         const userData = await accountApi.getUserData();
         setInitialValues(userData.data);
       } catch (error) {
-        console.error('Ошибка при получении данных пользователя:', error);
-        setError('Ошибка при получении данных пользователя');
+        console.error("Ошибка при получении данных пользователя:", error);
+        setError("Ошибка при получении данных пользователя");
       }
     };
 
@@ -44,13 +49,11 @@ const Profile: React.FC = () => {
   const handleSubmit = async (values: AccountData) => {
     try {
       chekTokens();
-      await accountApi.updateUserData(
-        {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          phone: values.phone,
-        }
-      );
+      await accountApi.updateUserData({
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone: values.phone,
+      });
 
       if (photo) {
         chekTokens();
@@ -60,18 +63,21 @@ const Profile: React.FC = () => {
       setMessage("Данные успешно обновлены");
       setOpen(true);
     } catch (error) {
-      console.error('Ошибка при обновлении данных пользователя:', error);
+      console.error("Ошибка при обновлении данных пользователя:", error);
       setMessage("Ошибка при обновлении данных пользователя");
       setOpen(true);
     }
   };
 
-  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
     setOpen(false);
-};
+  };
 
   if (error) return <Typography color="error">{error}</Typography>;
   if (!initialValues) {
@@ -79,7 +85,18 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <Box component={Paper} elevation={3} sx={{ padding: 4, maxWidth: 600, margin: 'auto', mt: 8, mb: 8, borderRadius: 2 }}>
+    <Box
+      component={Paper}
+      elevation={3}
+      sx={{
+        padding: 4,
+        maxWidth: 600,
+        margin: "auto",
+        mt: 8,
+        mb: 8,
+        borderRadius: 2,
+      }}
+    >
       <Typography variant="h5" component="h1" gutterBottom>
         Личный профиль
       </Typography>
@@ -90,15 +107,24 @@ const Profile: React.FC = () => {
       >
         {() => (
           <Form>
-            <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              mb={3}
+            >
               <Avatar
                 alt="User Photo"
-                src={photo ? URL.createObjectURL(photo) : initialValues.photoUrl || ''}
+                src={
+                  photo
+                    ? URL.createObjectURL(photo)
+                    : initialValues.photoUrl || ""
+                }
                 sx={{ width: 100, height: 100 }}
               />
               <input
                 accept="image/*"
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
                 id="photo-upload"
                 type="file"
                 onChange={(event) => {
@@ -108,7 +134,11 @@ const Profile: React.FC = () => {
                 }}
               />
               <label htmlFor="photo-upload">
-                <Button variant="contained" component="span" sx={{ bgcolor: 'button.primary', mt: 2 }}>
+                <Button
+                  variant="contained"
+                  component="span"
+                  sx={{ bgcolor: "button.primary", mt: 2 }}
+                >
                   Загрузить фотографию
                 </Button>
               </label>
@@ -158,17 +188,25 @@ const Profile: React.FC = () => {
               Статус: {initialValues.userStatus}
             </Typography>
             <Typography variant="body2">
-              Дата регистрации: {initialValues.registrationDate.toString().replace(new RegExp(',', 'g'), '-')}
+              Дата регистрации:{" "}
+              {initialValues.registrationDate
+                .toString()
+                .replace(new RegExp(",", "g"), "-")}
             </Typography>
 
-            <Button type="submit" variant="contained" sx={{ bgcolor: 'button.primary', mt: 3}} fullWidth >
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ bgcolor: "button.primary", mt: 3 }}
+              fullWidth
+            >
               Сохранить изменения
             </Button>
           </Form>
         )}
       </Formik>
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity='success'> 
+        <Alert onClose={handleClose} severity="success">
           {message}
         </Alert>
       </Snackbar>

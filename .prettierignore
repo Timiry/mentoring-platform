@@ -1,0 +1,11 @@
+node_modules
+public
+dist
+
+yarn.lock
+package-lock.json
+*.jpg
+*.svg
+*.png
+*.webp
+*.min.mjs

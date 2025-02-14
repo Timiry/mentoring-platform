@@ -1,70 +1,89 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Paper, Snackbar } from '@mui/material';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Snackbar,
+} from "@mui/material";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 
-import InvalidInputMessage from '../../../../components/InvalidInputMessage';
-import Alert from '../../../../components/Alert';
+import InvalidInputMessage from "../../../../components/InvalidInputMessage";
+import Alert from "../../../../components/Alert";
 import axios, { securityApi } from "../../../../api";
 
 const RegisterForm: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const initialValues = {
-    email: '',
-    login: '',
-    password: '',
-    confirmPassword: '',
+    email: "",
+    login: "",
+    password: "",
+    confirmPassword: "",
   };
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email('Некорректный адрес электронной почты').required('Обязательное поле'),
-    login: Yup.string().required('Обязательное поле'),
+    email: Yup.string()
+      .email("Некорректный адрес электронной почты")
+      .required("Обязательное поле"),
+    login: Yup.string().required("Обязательное поле"),
     password: Yup.string()
-      .min(8, 'Пароль должен содержать минимум 8 символов')
-      .required('Обязательное поле'),
+      .min(8, "Пароль должен содержать минимум 8 символов")
+      .required("Обязательное поле"),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password')], 'Пароли не совпадают')
-      .required('Обязательное поле'),
+      .oneOf([Yup.ref("password")], "Пароли не совпадают")
+      .required("Обязательное поле"),
   });
 
   const navigate = useNavigate();
 
-  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
     setOpen(false);
   };
 
   const handleSubmit = (values: typeof initialValues) => {
-
     const response = securityApi.registerUser(values);
     response.then(console.log);
-    response.then((result) => {
-      if (result.status == 201) {
-        console.log(result);
-        navigate('/login');
-      }
-    })
-    .catch((error) => {
-      if (axios.isAxiosError(error)) {
-        // Выводим статус ошибки, если он доступен
-        if (error.response) {
-          console.error('Ошибка при регистрации:', error.response.status, error.response.data.message, error);
-          setMessage(`Ошибка: ${error.response.data.message} с кодом ${error.response.status}. Попробуйте снова.`);
-        } else {
-          console.error('Ошибка при регистрации:', error.message);
-          setMessage('Ошибка при соединении с сервером. Попробуйте снова.');
+    response
+      .then((result) => {
+        if (result.status == 201) {
+          console.log(result);
+          navigate("/login");
         }
-      } else {
-        console.error('Неизвестная ошибка:', error);
-        setMessage('Произошла неизвестная ошибка. Попробуйте снова.');
-      }
-      setOpen(true);
-    });
+      })
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          // Выводим статус ошибки, если он доступен
+          if (error.response) {
+            console.error(
+              "Ошибка при регистрации:",
+              error.response.status,
+              error.response.data.message,
+              error
+            );
+            setMessage(
+              `Ошибка: ${error.response.data.message} с кодом ${error.response.status}. Попробуйте снова.`
+            );
+          } else {
+            console.error("Ошибка при регистрации:", error.message);
+            setMessage("Ошибка при соединении с сервером. Попробуйте снова.");
+          }
+        } else {
+          console.error("Неизвестная ошибка:", error);
+          setMessage("Произошла неизвестная ошибка. Попробуйте снова.");
+        }
+        setOpen(true);
+      });
   };
 
   return (
@@ -77,7 +96,7 @@ const RegisterForm: React.FC = () => {
       sx={{
         padding: 4,
         maxWidth: 400,
-        margin: 'auto',
+        margin: "auto",
         mt: 3,
         borderRadius: 2,
       }}
@@ -92,7 +111,7 @@ const RegisterForm: React.FC = () => {
       >
         {({ handleChange, handleBlur }) => (
           <Form>
-            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+            <Box sx={{ width: "100%", minHeight: "12px" }}>
               <ErrorMessage name="email" component={InvalidInputMessage} />
             </Box>
 
@@ -106,8 +125,8 @@ const RegisterForm: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            
-            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+
+            <Box sx={{ width: "100%", minHeight: "12px" }}>
               <ErrorMessage name="login" component={InvalidInputMessage} />
             </Box>
 
@@ -121,8 +140,8 @@ const RegisterForm: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            
-            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+
+            <Box sx={{ width: "100%", minHeight: "12px" }}>
               <ErrorMessage name="password" component={InvalidInputMessage} />
             </Box>
 
@@ -137,9 +156,12 @@ const RegisterForm: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            
-            <Box sx={{ width: '100%', minHeight: '12px' }}> 
-              <ErrorMessage name="confirmPassword" component={InvalidInputMessage} />
+
+            <Box sx={{ width: "100%", minHeight: "12px" }}>
+              <ErrorMessage
+                name="confirmPassword"
+                component={InvalidInputMessage}
+              />
             </Box>
 
             <Field
@@ -154,15 +176,20 @@ const RegisterForm: React.FC = () => {
               onBlur={handleBlur}
             />
 
-            <Button type="submit" variant="contained" sx={{ bgcolor: 'button.primary'}} fullWidth>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ bgcolor: "button.primary" }}
+              fullWidth
+            >
               Зарегистрироваться
             </Button>
           </Form>
         )}
       </Formik>
-      
+
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity='error'> 
+        <Alert onClose={handleClose} severity="error">
           {message}
         </Alert>
       </Snackbar>
