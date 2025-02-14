@@ -1,32 +1,43 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Paper, Link, Snackbar } from '@mui/material';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  Link,
+  Snackbar,
+} from "@mui/material";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
-import InvalidInputMessage from '../../../../components/InvalidInputMessage';
-import Alert from '../../../../components/Alert';
+import InvalidInputMessage from "../../../../components/InvalidInputMessage";
+import Alert from "../../../../components/Alert";
 import axios, { securityApi } from "../../../../api";
 
 const LoginForm: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const initialValues = {
-    login: '',
-    password: '',
+    login: "",
+    password: "",
   };
 
   const validationSchema = Yup.object().shape({
-    login: Yup.string().required('Обязательное поле'),
-    password: Yup.string().required('Обязательное поле'),
+    login: Yup.string().required("Обязательное поле"),
+    password: Yup.string().required("Обязательное поле"),
   });
 
   const navigate = useNavigate();
 
-  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
     setOpen(false);
@@ -35,30 +46,39 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (values: typeof initialValues) => {
     if (!localStorage.deviceId) localStorage.deviceId = uuidv4();
     try {
-      const result = await securityApi.login(values, { deviceId: localStorage.deviceId });
+      const result = await securityApi.login(values, {
+        deviceId: localStorage.deviceId,
+      });
       if (result.status === 200) {
-          localStorage.accessToken = result.data.accessToken;
-          localStorage.refreshToken = result.data.refreshToken;
-          localStorage.accessTokenExpiry = result.data.accessTokenExpiry;
-          localStorage.refreshTokenExpiry = result.data.refreshTokenExpiry;
-          console.log(result);
-          navigate('/');
+        localStorage.accessToken = result.data.accessToken;
+        localStorage.refreshToken = result.data.refreshToken;
+        localStorage.accessTokenExpiry = result.data.accessTokenExpiry;
+        localStorage.refreshTokenExpiry = result.data.refreshTokenExpiry;
+        console.log(result);
+        navigate("/");
       }
-  } catch (error) {
+    } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          console.error('Ошибка при входе:', error.response.status, error.response.data.message, error);
-          setMessage(`Ошибка: ${error.response.data.message} с кодом ${error.response.status}. Попробуйте снова.`);
+          console.error(
+            "Ошибка при входе:",
+            error.response.status,
+            error.response.data.message,
+            error
+          );
+          setMessage(
+            `Ошибка: ${error.response.data.message} с кодом ${error.response.status}. Попробуйте снова.`
+          );
         } else {
-          console.error('Ошибка при входе:', error.message);
-          setMessage('Ошибка при соединении с сервером. Попробуйте снова.');
+          console.error("Ошибка при входе:", error.message);
+          setMessage("Ошибка при соединении с сервером. Попробуйте снова.");
         }
       } else {
-        console.error('Неизвестная ошибка:', error);
-        setMessage('Произошла неизвестная ошибка. Попробуйте снова.');
+        console.error("Неизвестная ошибка:", error);
+        setMessage("Произошла неизвестная ошибка. Попробуйте снова.");
       }
       setOpen(true);
-    };
+    }
   };
 
   return (
@@ -71,7 +91,7 @@ const LoginForm: React.FC = () => {
       sx={{
         padding: 4,
         maxWidth: 400,
-        margin: 'auto',
+        margin: "auto",
         mt: 3,
         borderRadius: 2,
       }}
@@ -85,8 +105,8 @@ const LoginForm: React.FC = () => {
         onSubmit={handleSubmit}
       >
         {({ handleChange, handleBlur }) => (
-          <Form >
-            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+          <Form>
+            <Box sx={{ width: "100%", minHeight: "12px" }}>
               <ErrorMessage name="login" component={InvalidInputMessage} />
             </Box>
 
@@ -100,8 +120,8 @@ const LoginForm: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-          
-            <Box sx={{ width: '100%', minHeight: '12px' }}> 
+
+            <Box sx={{ width: "100%", minHeight: "12px" }}>
               <ErrorMessage name="password" component={InvalidInputMessage} />
             </Box>
 
@@ -116,23 +136,28 @@ const LoginForm: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            
-            <Button type="submit" variant="contained" sx={{ bgcolor: 'button.primary'}} fullWidth>
+
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ bgcolor: "button.primary" }}
+              fullWidth
+            >
               Войти
             </Button>
           </Form>
         )}
       </Formik>
-      <Box sx={{pt: '20px', textAlign: 'center'}}>
-          <Link href="/register" sx={{ textDecoration: 'none'}}>
-              <Typography variant='B4Regular' color='text.secondary'>
-                  Зарегистрироваться
-              </Typography>
-          </Link>
+      <Box sx={{ pt: "20px", textAlign: "center" }}>
+        <Link href="/register" sx={{ textDecoration: "none" }}>
+          <Typography variant="B4Regular" color="text.secondary">
+            Зарегистрироваться
+          </Typography>
+        </Link>
       </Box>
 
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity='error'> 
+        <Alert onClose={handleClose} severity="error">
           {message}
         </Alert>
       </Snackbar>
@@ -141,4 +166,3 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
- 

@@ -4,10 +4,9 @@ import LoginForm from "./components/LoginForm";
 const LoginPage: React.FC = () => {
   return (
     <MainLayout>
-        <LoginForm/>
+      <LoginForm />
     </MainLayout>
   );
 };
 
 export default LoginPage;
- 
