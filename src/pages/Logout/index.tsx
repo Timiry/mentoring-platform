@@ -1,12 +1,18 @@
-import MainLayout from "../../components/layout/Main";
-import LogoutForm from "./components/LogoutForm";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const LoginPage: React.FC = () => {
-  return (
-    <MainLayout>
-      <LogoutForm />
-    </MainLayout>
-  );
+const LogoutPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Очистка данных авторизации
+    localStorage.clear();
+
+    // Перенаправление на главную страницу
+    navigate("/");
+  }, [navigate]);
+
+  return null;
 };
 
-export default LoginPage;
+export default LogoutPage;

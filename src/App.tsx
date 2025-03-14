@@ -7,10 +7,11 @@ import LoginPage from "./pages/Login";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/Profile";
 import MessengerPage from "./pages/Messenger";
+import TeachingPage from "./pages/Teaching";
 
 import Button from "@mui/material/Button";
 import CatalogPage from "./pages/Catalog";
-import LogoutPage from "./pages/Logout/components/LogoutForm";
+import LogoutPage from "./pages/Logout";
 import { useEffect, useState } from "react";
 import WebSocketService from "./services/WebSocketService";
 import * as Stomp from "stompjs";
@@ -18,6 +19,8 @@ import { Snackbar } from "@mui/material";
 import Alert from "./components/Alert";
 import { communicationApi } from "./api";
 import { AccountData } from "./types";
+import EditCourseDescription from "./pages/Teaching/components/EditCourseDescription";
+import EditCourseContent from "./pages/Teaching/components/EditCourseContent";
 
 function App() {
   const [open, setOpen] = useState(false);
@@ -84,6 +87,15 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/messenger" element={<MessengerPage />} />
         <Route path="/messenger/:chatId" element={<MessengerPage />} />
+        <Route path="/teaching" element={<TeachingPage />} />
+        <Route
+          path="/courses/:courseId/edit-description"
+          element={<EditCourseDescription />}
+        />
+        <Route
+          path="/courses/:courseId/edit-content"
+          element={<EditCourseContent />}
+        />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
