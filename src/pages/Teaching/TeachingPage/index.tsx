@@ -1,4 +1,4 @@
-import MainLayout from "../../components/layout/Main";
+import MainLayout from "../../../components/layout/Main";
 import CoursesList from "./components/CoursesList";
 
 const TeachingPage: React.FC = () => {

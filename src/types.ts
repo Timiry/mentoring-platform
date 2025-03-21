@@ -65,3 +65,70 @@ export interface ChatData {
   firstName: string;
   lastName: string;
 }
+
+export enum LessonType {
+  HTML,
+  VIDEO,
+  TEST,
+  MULTI_TEST,
+  CODE,
+}
+
+export interface Lesson {
+  id?: number;
+  ordinalNumber: number;
+  type: LessonType;
+}
+
+export interface HtmlLesson extends Lesson {
+  html: string;
+}
+
+export interface VideoLesson extends Lesson {
+  videoUrl: string;
+}
+
+interface CodeTest {
+  input: string;
+  output: string;
+}
+
+export interface CodeLesson extends Lesson {
+  condition: string;
+  codeTests: CodeTest[];
+}
+
+export interface TestLesson extends Lesson {
+  condition: string;
+  possibleAnswers: string[];
+  answer: string;
+}
+
+export interface MultiTestLesson extends Lesson {
+  condition: string;
+  possibleAnswers: string[];
+  correctAnswers: string[];
+}
+
+export type AnyLesson =
+  | HtmlLesson
+  | VideoLesson
+  | TestLesson
+  | MultiTestLesson
+  | CodeLesson;
+
+export interface Theme {
+  id?: number; // ID может быть неопределенным для новых тем
+  title: string;
+  lessons: AnyLesson[];
+  ordinalNumber: number; // Порядковый номер темы
+}
+
+export interface Module {
+  id?: number; // ID может быть неопределенным для новых модулей
+  title: string;
+  originalTitle: string;
+  themes: Theme[];
+  newThemeTitle: string; // Новое поле для хранения названия новой темы
+  ordinalNumber: number; // Порядковый номер модуля
+}

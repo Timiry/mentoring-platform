@@ -5,7 +5,7 @@ import {
   CloudUpload as CloudUploadIcon,
   Image as ImageIcon,
 } from "@mui/icons-material";
-import MainLayout from "../../../../components/layout/Main";
+import MainLayout from "../../../components/layout/Main";
 
 const EditCourseDescription: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();

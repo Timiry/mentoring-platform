@@ -9,47 +9,104 @@ import {
   List,
   ListItem,
   ListItemText,
+  Link,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import MainLayout from "../../../../components/layout/Main";
-
-interface Lesson {
-  title: string;
-}
-
-interface Theme {
-  id?: number; // ID может быть неопределенным для новых тем
-  title: string;
-  lessons: Lesson[];
-  ordinalNumber: number; // Порядковый номер темы
-}
-
-interface Module {
-  id?: number; // ID может быть неопределенным для новых модулей
-  title: string;
-  originalTitle: string;
-  themes: Theme[];
-  newThemeTitle: string; // Новое поле для хранения названия новой темы
-  ordinalNumber: number; // Порядковый номер модуля
-}
+//import EditIcon from "@mui/icons-material/Edit";
+import MainLayout from "../../../components/layout/Main";
+import { Module, Theme, LessonType } from "../../../types";
 
 const EditCourseContent: React.FC = () => {
+  const { courseId } = useParams<{ courseId: string }>();
   const [modules, setModules] = useState<Module[]>([
     {
       id: 1,
-      title: "Новый модуль",
-      originalTitle: "Новый модуль",
+      title: "Модуль 1",
+      ordinalNumber: 1,
       themes: [
         {
-          id: 111,
+          id: 1,
           title: "Тема 1",
-          lessons: [],
+          ordinalNumber: 1,
+          lessons: [
+            {
+              id: 1,
+              ordinalNumber: 1,
+              type: LessonType.HTML,
+              html: "<h1>Пример HTML урока</h1>",
+            },
+            {
+              id: 2,
+              ordinalNumber: 2,
+              type: LessonType.VIDEO,
+              videoUrl: "http://example.com/video.mp4",
+            },
+            {
+              id: 3,
+              ordinalNumber: 3,
+              type: LessonType.TEST,
+              condition: "Какой результат 2 + 2?",
+              possibleAnswers: ["3", "4", "5"],
+              answer: "4",
+            },
+            {
+              id: 4,
+              ordinalNumber: 4,
+              type: LessonType.MULTI_TEST,
+              condition: "Выберите правильные ответы:",
+              possibleAnswers: ["Ответ 1", "Ответ 2", "Ответ 3"],
+              correctAnswers: ["Ответ 2", "Ответ 3"],
+            },
+            {
+              id: 5,
+              ordinalNumber: 5,
+              type: LessonType.CODE,
+              condition: "Напишите функцию, которая складывает два числа.",
+              codeTests: [
+                { input: "1, 2", output: "3" },
+                { input: "3, 4", output: "7" },
+              ],
+            },
+          ],
+        },
+        {
+          id: 2,
+          title: "Тема 2",
+          ordinalNumber: 2,
+          lessons: [
+            {
+              id: 6,
+              ordinalNumber: 1,
+              type: LessonType.HTML,
+              html: "<h1>HTML Урок 2</h1>",
+            },
+          ],
+        },
+      ],
+      originalTitle: "",
+      newThemeTitle: "",
+    },
+    {
+      id: 2,
+      title: "Модуль 2",
+      themes: [
+        {
+          id: 3,
+          title: "Тема 3",
+          lessons: [
+            {
+              id: 7,
+              ordinalNumber: 1,
+              type: LessonType.VIDEO,
+              videoUrl: "http://example.com/video2.mp4",
+            },
+          ],
           ordinalNumber: 1,
         },
       ],
+      originalTitle: "",
       newThemeTitle: "",
-      ordinalNumber: 1,
+      ordinalNumber: 2,
     },
   ]);
 
@@ -60,8 +117,6 @@ const EditCourseContent: React.FC = () => {
     moduleIds: [],
     themeIds: [],
   });
-
-  const { courseId } = useParams<{ courseId: string }>();
 
   const handleAddModule = () => {
     const newModule: Module = {
@@ -195,9 +250,12 @@ const EditCourseContent: React.FC = () => {
                       primary={`${module.ordinalNumber}.${theme.ordinalNumber} ${theme.title}`}
                     />
                     {theme.id ? (
-                      <IconButton>
-                        <EditIcon />
-                      </IconButton>
+                      <Link
+                        href={`/edit-theme/${theme.id}/lesson/1`}
+                        sx={{ textDecoration: "none", padding: 0 }}
+                      >
+                        Редактировать
+                      </Link>
                     ) : (
                       <Typography variant="body2" color="error">
                         Тема не сохранена

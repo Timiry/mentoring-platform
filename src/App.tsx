@@ -7,7 +7,7 @@ import LoginPage from "./pages/Login";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProfilePage from "./pages/Profile";
 import MessengerPage from "./pages/Messenger";
-import TeachingPage from "./pages/Teaching";
+import TeachingPage from "./pages/Teaching/TeachingPage";
 
 import Button from "@mui/material/Button";
 import CatalogPage from "./pages/Catalog";
@@ -19,8 +19,9 @@ import { Snackbar } from "@mui/material";
 import Alert from "./components/Alert";
 import { communicationApi } from "./api";
 import { AccountData } from "./types";
-import EditCourseDescription from "./pages/Teaching/components/EditCourseDescription";
-import EditCourseContent from "./pages/Teaching/components/EditCourseContent";
+import EditCourseDescription from "./pages/Teaching/EditCourseDescription";
+import EditCourseContent from "./pages/Teaching/EditCourseContent";
+import EditTheme from "./pages/Teaching/EditThemePage";
 
 function App() {
   const [open, setOpen] = useState(false);
@@ -95,6 +96,10 @@ function App() {
         <Route
           path="/courses/:courseId/edit-content"
           element={<EditCourseContent />}
+        />
+        <Route
+          path="/edit-theme/:themeId/lesson/:lessonOrdinalNumber"
+          element={<EditTheme />}
         />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/login" element={<LoginPage />} />
