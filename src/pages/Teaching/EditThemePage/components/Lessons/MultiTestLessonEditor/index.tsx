@@ -1,15 +1,18 @@
 import React from "react";
-import { TextField } from "@mui/material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import { MultiTestLesson } from "../../../../../../types";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 interface MultiTestLessonEditorProps {
   lesson: MultiTestLesson;
   onChange: (updatedLesson: MultiTestLesson) => void;
+  handleDeleteLesson: (lesson: MultiTestLesson) => void;
 }
 
 const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
   lesson,
   onChange,
+  handleDeleteLesson,
 }) => {
   const handleConditionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...lesson, condition: e.target.value });
@@ -29,6 +32,14 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
 
   return (
     <div>
+      <Box display="flex" alignItems="center" mb={4}>
+        <Typography variant="h5" mr={2}>
+          Урок {lesson.ordinalNumber}: Множественный тест
+        </Typography>
+        <IconButton onClick={() => handleDeleteLesson(lesson)}>
+          <CloseOutlinedIcon />
+        </IconButton>
+      </Box>
       <TextField
         label="Условие"
         value={lesson.condition}

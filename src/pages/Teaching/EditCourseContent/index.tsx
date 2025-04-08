@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -14,10 +14,12 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 //import EditIcon from "@mui/icons-material/Edit";
 import MainLayout from "../../../components/layout/Main";
-import { Module, Theme, LessonType } from "../../../types";
+import { Module, ModuleToGet, Theme, ThemeToGet } from "../../../types";
+import { coursesApi } from "../../../api";
 
 const EditCourseContent: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
+  const curCourseId = courseId ? parseInt(courseId) : 1;
   const [modules, setModules] = useState<Module[]>([
     {
       id: 1,
@@ -28,87 +30,60 @@ const EditCourseContent: React.FC = () => {
           id: 1,
           title: "Тема 1",
           ordinalNumber: 1,
-          lessons: [
-            {
-              id: 1,
-              ordinalNumber: 1,
-              type: LessonType.HTML,
-              html: "<h1>Пример HTML урока</h1>",
-            },
-            {
-              id: 2,
-              ordinalNumber: 2,
-              type: LessonType.VIDEO,
-              videoUrl: "http://example.com/video.mp4",
-            },
-            {
-              id: 3,
-              ordinalNumber: 3,
-              type: LessonType.TEST,
-              condition: "Какой результат 2 + 2?",
-              possibleAnswers: ["3", "4", "5"],
-              answer: "4",
-            },
-            {
-              id: 4,
-              ordinalNumber: 4,
-              type: LessonType.MULTI_TEST,
-              condition: "Выберите правильные ответы:",
-              possibleAnswers: ["Ответ 1", "Ответ 2", "Ответ 3"],
-              correctAnswers: ["Ответ 2", "Ответ 3"],
-            },
-            {
-              id: 5,
-              ordinalNumber: 5,
-              type: LessonType.CODE,
-              condition: "Напишите функцию, которая складывает два числа.",
-              codeTests: [
-                { input: "1, 2", output: "3" },
-                { input: "3, 4", output: "7" },
-              ],
-            },
-          ],
-        },
-        {
-          id: 2,
-          title: "Тема 2",
-          ordinalNumber: 2,
-          lessons: [
-            {
-              id: 6,
-              ordinalNumber: 1,
-              type: LessonType.HTML,
-              html: "<h1>HTML Урок 2</h1>",
-            },
-          ],
+          moduleId: 1,
+          fullLessons: [],
+          description: "",
+          lessons: [],
+          contentType: "",
+          wasChanged: false,
         },
       ],
-      originalTitle: "",
+      wasChanged: false,
       newThemeTitle: "",
-    },
-    {
-      id: 2,
-      title: "Модуль 2",
-      themes: [
-        {
-          id: 3,
-          title: "Тема 3",
-          lessons: [
-            {
-              id: 7,
-              ordinalNumber: 1,
-              type: LessonType.VIDEO,
-              videoUrl: "http://example.com/video2.mp4",
-            },
-          ],
-          ordinalNumber: 1,
-        },
-      ],
-      originalTitle: "",
-      newThemeTitle: "",
-      ordinalNumber: 2,
+      description: "",
+      courseId: curCourseId,
     },
   ]);
+
+  useEffect(() => {
+    const getModulesWithThemesByCourseId = async (courseId: number) => {
+      try {
+        // Получаем модули курса
+        const modulesResponse = await coursesApi.getModulesByCourse(courseId);
+        const modules: ModuleToGet[] = modulesResponse.data; // Предполагаем, что данные находятся в response.data
+
+        // Получаем все темы курса
+        const themesResponse = await coursesApi.getThemeByCourse(courseId);
+        const themes: ThemeToGet[] = themesResponse.data; // Предполагаем, что данные находятся в response.data
+
+        // Итерируемся по каждому модулю и добавляем соответствующие темы
+        const modulesWithThemes = modules.map((module) => {
+          const moduleThemes = themes
+            .filter((theme) => theme.moduleId === module.id) // Фильтруем темы по moduleId
+            .map((theme) => ({
+              ...theme,
+              lessons: [], // Инициализируем массив уроков, если он отсутствует
+              fullLessons: [], // Инициализируем массив полных уроков
+              wasChanged: false,
+            }));
+
+          return {
+            ...module,
+            newThemeTitle: "", // Инициализируем новое название темы
+            themes: moduleThemes, // Добавляем темы к модулю
+            wasChanged: false,
+          };
+        });
+
+        setModules(modulesWithThemes); // Возвращаем массив модулей с их темами
+      } catch (error) {
+        console.error("Ошибка при получении модулей и тем:", error);
+        throw error; // Пробрасываем ошибку дальше
+      }
+    };
+
+    getModulesWithThemesByCourseId(curCourseId);
+  }, [curCourseId]);
 
   const [deletedIds, setDeletedIds] = useState<{
     moduleIds: number[];
@@ -121,10 +96,12 @@ const EditCourseContent: React.FC = () => {
   const handleAddModule = () => {
     const newModule: Module = {
       title: "Новый модуль",
-      originalTitle: "Новый модуль",
       themes: [],
       newThemeTitle: "",
-      ordinalNumber: modules.length + 1, // Порядковый номер нового модуля
+      ordinalNumber: modules.length + 1,
+      description: "",
+      courseId: 0,
+      wasChanged: false,
     };
     setModules([...modules, newModule]);
   };
@@ -141,7 +118,8 @@ const EditCourseContent: React.FC = () => {
       .filter((mod) => mod.ordinalNumber !== module.ordinalNumber)
       .map((mod, index) => ({
         ...mod,
-        ordinalNumber: index + 1, // Порядковый номер равен индексу + 1
+        ordinalNumber: index + 1,
+        wasChanged: index >= module.ordinalNumber - 1 ? true : false,
       }));
     setModules(updatedModules);
   };
@@ -150,7 +128,12 @@ const EditCourseContent: React.FC = () => {
     const newTheme: Theme = {
       title: modules[moduleIndex].newThemeTitle,
       lessons: [],
-      ordinalNumber: modules[moduleIndex].themes.length + 1, // Порядковый номер новой темы
+      ordinalNumber: modules[moduleIndex].themes.length + 1,
+      description: "",
+      moduleId: 0,
+      fullLessons: [],
+      contentType: "",
+      wasChanged: false,
     };
     const updatedModules = [...modules];
     updatedModules[moduleIndex].themes.push(newTheme);
@@ -172,41 +155,58 @@ const EditCourseContent: React.FC = () => {
       .map((theme, index) => ({
         ...theme,
         ordinalNumber: index + 1, // Порядковый номер равен индексу + 1
+        wasChanged: index >= themeIndex ? true : false,
       }));
     setModules(updatedModules);
   };
 
   const handleSave = () => {
-    // Отправка запросов для удаления модулей и тем
-    deletedIds.moduleIds.forEach((id) => {
-      // Отправка запроса на удаление модуля с id
-      console.log(`Удаление модуля с id: ${id}`);
-    });
-    deletedIds.themeIds.forEach((id) => {
-      // Отправка запроса на удаление темы с id
-      console.log(`Удаление темы с id: ${id}`);
-    });
-
-    // Проход по всему списку модулей
-    // Отправка запросов на создание модулей и тем без id
-    // А также отправка запросов на изменение названий модулей с id
-    modules.forEach((module) => {
-      if (!module.id) {
-        // Отправка запроса на создание нового модуля
-        console.log(`Создание нового модуля: ${module.title}`);
-      } else if (module.title !== module.originalTitle) {
-        // Отправка запроса на изменение названия сохраненного модуля
-        console.log(
-          `Изменение названия модуля с "${module.originalTitle}" на "${module.title}"`
-        );
-      }
-      module.themes.forEach((theme) => {
-        if (!theme.id) {
-          // Отправка запроса на создание новой темы
-          console.log(`Создание новой темы: ${theme.title}`);
-        }
+    try {
+      // Отправка запросов для удаления модулей и тем
+      deletedIds.moduleIds.forEach((id) => {
+        // Отправка запроса на удаление модуля с id
+        coursesApi.deleteModule(id);
+        console.log(`Удаление модуля с id: ${id}`);
       });
-    });
+      deletedIds.themeIds.forEach((id) => {
+        // Отправка запроса на удаление темы с id
+        coursesApi.deleteTheme(id);
+        console.log(`Удаление темы с id: ${id}`);
+      });
+
+      // Проход по всему списку модулей
+      // Отправка запросов на создание модулей и тем без id
+      // А также отправка запросов на изменение названий модулей с id
+      modules.forEach(async (module) => {
+        if (!module.id) {
+          // Отправка запроса на создание нового модуля
+          const newModuleRequest = await coursesApi.createModule(module);
+          module.id = newModuleRequest.data.id;
+          console.log(`Создание нового модуля: ${module.title}`);
+        } else if (module.wasChanged) {
+          // Отправка запроса на изменение сохраненного модуля
+          coursesApi.updateModule(module.id, module);
+          console.log(`Изменение модуля ${module.title}`);
+          module.wasChanged = false;
+        }
+        module.themes.forEach(async (theme) => {
+          if (!theme.id) {
+            // Отправка запроса на создание новой темы
+            const newThemeRequest = await coursesApi.createTheme(theme);
+            theme.id = newThemeRequest.data.id;
+            console.log(`Создание новой темы: ${theme.title}`);
+          } else if (theme.wasChanged) {
+            // Отправка запроса на изменение сохраненной темы
+            coursesApi.updateTheme(theme.id, theme);
+            console.log(`Изменение темы ${theme.title}`);
+            theme.wasChanged = false;
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Ошибка при сохранении модулей и тем:", error);
+      throw error; // Пробрасываем ошибку дальше
+    }
   };
 
   return (

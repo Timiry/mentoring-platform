@@ -37,33 +37,35 @@ import AddIcon from "@mui/icons-material/Add";
 
 interface EditThemeProps {
   theme: Theme;
-  changeThemeTitle: (title: string) => void;
+  saveChanges: (themeId: number, deletedLessonsIds: number[]) => void;
   changeTheme: (updatedTheme: Theme) => void;
 }
 
 const EditTheme: React.FC<EditThemeProps> = ({
   theme,
-  changeThemeTitle,
   changeTheme,
+  saveChanges,
 }) => {
   const { lessonOrdinalNumber } = useParams<{ lessonOrdinalNumber: string }>();
   const curLessonOrdinalNumber = lessonOrdinalNumber
     ? parseInt(lessonOrdinalNumber)
     : 1;
-  const curLesson = theme.lessons[curLessonOrdinalNumber - 1];
+  const curLesson = theme.fullLessons[curLessonOrdinalNumber - 1];
 
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [deletedLessonsIds, setDeletedLessonsIds] = useState<number[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    changeThemeTitle(e.target.value);
+    changeTheme({ ...theme, title: e.target.value, wasChanged: true });
     setHasUnsavedChanges(true); // Отмечаем, что есть несохраненные изменения
   };
 
   const handleSave = () => {
     if (theme.title.trim() !== "") {
-      console.log(`Сохранить тему: ${theme.title}`);
+      saveChanges(theme.id ?? 0, deletedLessonsIds);
+      theme.wasChanged = false;
       setHasUnsavedChanges(false); // Сбрасываем флаг после сохранения
     }
   };
@@ -109,8 +111,10 @@ const EditTheme: React.FC<EditThemeProps> = ({
 
   const handleCreateLesson = (lessonType: LessonType) => {
     const newLesson: Lesson = {
-      ordinalNumber: theme.lessons.length + 1,
+      ordinalNumber: theme.fullLessons.length + 1,
       type: lessonType,
+      themeId: theme.id ?? 0, // костыыыль(!)
+      wasChanged: false,
     };
 
     // Создание урока в зависимости от типа
@@ -163,7 +167,8 @@ const EditTheme: React.FC<EditThemeProps> = ({
 
     const updatedTheme = {
       ...theme,
-      lessons: [...theme.lessons, specificLesson],
+      fullLessons: [...theme.fullLessons, specificLesson],
+      wasChanged: true,
     };
     changeTheme(updatedTheme); // Обновляем тему
     setHasUnsavedChanges(true); // Устанавливаем флаг при создании нового урока
@@ -173,13 +178,38 @@ const EditTheme: React.FC<EditThemeProps> = ({
     handleCloseDialog(); // Закрываем диалог
   };
 
+  const handleDeleteLesson = (lesson: AnyLesson) => {
+    if (theme.fullLessons.length == 1) {
+      console.log("В теме должен быть хотя бы 1 урок");
+      return;
+    }
+    if (lesson.id != undefined) {
+      const id = lesson.id;
+      setDeletedLessonsIds((prev) => [...prev, id]);
+    }
+    const updatedTheme = {
+      ...theme,
+      fullLessons: theme.fullLessons
+        .filter((les) => les.ordinalNumber !== lesson.ordinalNumber)
+        .map((les, index) => ({
+          ...les,
+          ordinalNumber: index + 1,
+          wasChanged: index >= lesson.ordinalNumber - 1 ? true : false,
+        })),
+    };
+    if (theme.fullLessons.length == lesson.ordinalNumber) {
+      navigate(`/edit-theme/${theme.id}/lesson/${lesson.ordinalNumber - 1}`);
+    }
+    changeTheme(updatedTheme);
+  };
+
   const onLessonChange = (updatedLesson: AnyLesson) => {
-    const updatedLessons = theme.lessons.map((lesson) =>
+    const updatedLessons = theme.fullLessons.map((lesson) =>
       lesson.ordinalNumber === updatedLesson.ordinalNumber
         ? updatedLesson
         : lesson
     );
-    const updatedTheme = { ...theme, lessons: updatedLessons };
+    const updatedTheme = { ...theme, fullLessons: updatedLessons };
     changeTheme(updatedTheme);
     setHasUnsavedChanges(true); // Устанавливаем флаг при изменении урока
   };
@@ -203,7 +233,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
         mb={3}
         alignItems={"flex-end"}
       >
-        {theme.lessons.map((lesson, index) => (
+        {theme.fullLessons.map((lesson, index) => (
           <Box
             key={index}
             sx={{
@@ -283,6 +313,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
                 <HtmlLessonEditor
                   lesson={curLesson as HtmlLesson}
                   onChange={onLessonChange}
+                  handleDeleteLesson={handleDeleteLesson}
                 />
               );
             case LessonType.VIDEO:
@@ -290,6 +321,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
                 <VideoLessonEditor
                   lesson={curLesson as VideoLesson}
                   onChange={onLessonChange}
+                  handleDeleteLesson={handleDeleteLesson}
                 />
               );
             case LessonType.TEST:
@@ -297,6 +329,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
                 <TestLessonEditor
                   lesson={curLesson as TestLesson}
                   onChange={onLessonChange}
+                  handleDeleteLesson={handleDeleteLesson}
                 />
               );
             case LessonType.MULTI_TEST:
@@ -304,6 +337,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
                 <MultiTestLessonEditor
                   lesson={curLesson as MultiTestLesson}
                   onChange={onLessonChange}
+                  handleDeleteLesson={handleDeleteLesson}
                 />
               );
             case LessonType.CODE:
@@ -311,6 +345,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
                 <CodeLessonEditor
                   lesson={curLesson as CodeLesson}
                   onChange={onLessonChange}
+                  handleDeleteLesson={handleDeleteLesson}
                 />
               );
             default:

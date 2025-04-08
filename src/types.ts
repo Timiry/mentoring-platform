@@ -74,10 +74,47 @@ export enum LessonType {
   CODE,
 }
 
-export interface Lesson {
-  id?: number;
+export interface LessonToCreate {
   ordinalNumber: number;
   type: LessonType;
+  themeId: number;
+}
+
+export interface HtmlLessonToCreate extends LessonToCreate {
+  html: string;
+}
+
+export interface VideoLessonToCreate extends LessonToCreate {
+  videoUrl: string;
+}
+
+export interface CodeLessonToCreate extends LessonToCreate {
+  condition: string;
+  codeTests: CodeTest[];
+}
+
+export interface TestLessonToCreate extends LessonToCreate {
+  condition: string;
+  possibleAnswers: string[];
+  answer: string;
+}
+
+export interface MultiTestLessonToCreate extends LessonToCreate {
+  condition: string;
+  possibleAnswers: string[];
+  correctAnswers: string[];
+}
+
+export type AnyLessonToCreate =
+  | HtmlLessonToCreate
+  | VideoLessonToCreate
+  | TestLessonToCreate
+  | MultiTestLessonToCreate
+  | CodeLessonToCreate;
+
+export interface Lesson extends LessonToCreate {
+  id?: number;
+  wasChanged: boolean;
 }
 
 export interface HtmlLesson extends Lesson {
@@ -117,18 +154,55 @@ export type AnyLesson =
   | MultiTestLesson
   | CodeLesson;
 
-export interface Theme {
-  id?: number; // ID может быть неопределенным для новых тем
-  title: string;
-  lessons: AnyLesson[];
-  ordinalNumber: number; // Порядковый номер темы
+export interface ShortLesson {
+  id: number;
+  ordinalNumber: number;
 }
 
-export interface Module {
-  id?: number; // ID может быть неопределенным для новых модулей
+export interface ThemeToCreate {
   title: string;
-  originalTitle: string;
+  description: string;
+  ordinalNumber: number;
+  moduleId: number;
+  contentType: string;
+}
+
+export interface ThemeToGet extends ThemeToCreate {
+  id?: number;
+  lessons: ShortLesson[];
+}
+
+export interface Theme extends ThemeToGet {
+  wasChanged: boolean;
+  fullLessons: AnyLesson[];
+}
+
+export interface ModuleToCreate {
+  title: string;
+  description: string;
+  ordinalNumber: number;
+  courseId: number;
+}
+
+export interface ModuleToGet extends ModuleToCreate {
+  id?: number;
+}
+
+export interface Module extends ModuleToGet {
+  wasChanged: boolean;
+  newThemeTitle: string;
   themes: Theme[];
-  newThemeTitle: string; // Новое поле для хранения названия новой темы
-  ordinalNumber: number; // Порядковый номер модуля
+}
+
+export interface CourseToCreate {
+  title: string;
+  description: string;
+  completionTimeInHours: number;
+  //logo?: File | null;
+}
+
+export interface Course extends CourseToCreate {
+  id: number;
+  createdAt: string;
+  authorId: number;
 }

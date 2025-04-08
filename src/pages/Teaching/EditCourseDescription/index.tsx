@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TextField, Button, Typography, Box } from "@mui/material";
 import {
@@ -6,35 +6,54 @@ import {
   Image as ImageIcon,
 } from "@mui/icons-material";
 import MainLayout from "../../../components/layout/Main";
+import { CourseToCreate } from "../../../types";
+import { coursesApi } from "../../../api";
 
 const EditCourseDescription: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
-  const [course, setCourse] = useState({
+  const curCourseId = courseId ? parseInt(courseId) : 1;
+  const [course, setCourse] = useState<CourseToCreate>({
     title: "",
     description: "",
-    logo: null as File | null, // Поле для хранения загруженного файла
-    duration: "", // Поле для временного прохождения курса
+    completionTimeInHours: 0,
   });
 
   const [isHovered, setIsHovered] = useState(false); // Состояние для отслеживания наведения
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setCourse({ ...course, logo: e.target.files[0] }); // Сохраняем файл
-    }
-  };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const courseResponse = await coursesApi.getCourseById(curCourseId);
+        setCourse(courseResponse.data);
+      } catch (error) {
+        console.error("Ошибка при получении данных курса:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [curCourseId]);
+
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     setCourse({ ...course, logo: e.target.files[0] }); // Сохраняем файл
+  //   }
+  // };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Логика для создания или редактирования курса
-    const formData = new FormData();
-    formData.append("title", course.title);
-    formData.append("description", course.description);
-    formData.append("duration", course.duration);
-    if (course.logo) {
-      formData.append("logo", course.logo);
+    // Логика для создания или редактирования курса (пока тут тока редактирование)
+    try {
+      coursesApi.updateCourse(curCourseId, course);
+    } catch (error) {
+      console.error("Ошибка при сохранении курса:", error);
+      throw error; // Пробрасываем ошибку дальше
     }
 
+    // сохранение логотипа
+    // const formData = new FormData();
+    // if (course.logo) {
+    //   formData.append("logo", course.logo);
+    // }
     // Отправка formData на сервер
   };
 
@@ -50,11 +69,11 @@ const EditCourseDescription: React.FC = () => {
             onMouseLeave={() => setIsHovered(false)} // Убрать наведение
             onClick={() => document.getElementById("logo-upload")?.click()} // Открыть выбор файла
             sx={{
-              border: course.logo
-                ? "none"
-                : isHovered
-                  ? "1px solid #000"
-                  : "1px dashed #ccc",
+              // border: course.logo
+              //   ? "none"
+              //   : isHovered
+              //     ? "1px solid #000"
+              //     : "1px dashed #ccc",
               borderRadius: 2,
               width: "200px",
               height: "200px",
@@ -64,40 +83,40 @@ const EditCourseDescription: React.FC = () => {
               justifyContent: "center",
               cursor: "pointer",
               position: "relative",
-              backgroundColor: course.logo ? "transparent" : "white",
-              "&:hover": {
-                backgroundColor: course.logo
-                  ? "rgba(0, 0, 0, 0.1)"
-                  : "transparent",
-              },
+              // backgroundColor: course.logo ? "transparent" : "white",
+              // "&:hover": {
+              //   backgroundColor: course.logo
+              //     ? "rgba(0, 0, 0, 0.1)"
+              //     : "transparent",
+              // },
             }}
           >
-            {course.logo ? (
+            {/* {course.logo ? (
               <img
                 src={URL.createObjectURL(course.logo)} // Предварительный просмотр изображения
                 alt="Логотип курса"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
-            ) : (
-              <>
-                {isHovered ? (
-                  <>
-                    <CloudUploadIcon fontSize="large" />
-                    <Typography variant="body1">Загрузить</Typography>
-                  </>
-                ) : (
-                  <>
-                    <ImageIcon fontSize="large" />
-                    <Typography variant="body1">Логотип</Typography>
-                  </>
-                )}
-              </>
-            )}
+            ) : ( */}
+            <>
+              {isHovered ? (
+                <>
+                  <CloudUploadIcon fontSize="large" />
+                  <Typography variant="body1">Загрузить</Typography>
+                </>
+              ) : (
+                <>
+                  <ImageIcon fontSize="large" />
+                  <Typography variant="body1">Логотип</Typography>
+                </>
+              )}
+            </>
+            {/* )} */}
             <input
               type="file"
               id="logo-upload"
               accept="image/*" // Ограничиваем выбор только изображениями
-              onChange={handleFileChange}
+              //onChange={handleFileChange}
               style={{ display: "none" }} // Скрываем стандартный input
             />
           </Box>
@@ -119,8 +138,10 @@ const EditCourseDescription: React.FC = () => {
           />
           <TextField
             label="Время прохождения курса (в часах)"
-            value={course.duration}
-            onChange={(e) => setCourse({ ...course, duration: e.target.value })}
+            value={course.completionTimeInHours}
+            onChange={(e) =>
+              setCourse({ ...course, completionTimeInHours: +e.target.value })
+            }
             fullWidth
             type="number" // Указываем тип как число
           />

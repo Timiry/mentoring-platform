@@ -1,15 +1,18 @@
 import React from "react";
-import { TextField } from "@mui/material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import { TestLesson } from "../../../../../../types";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 interface TestLessonEditorProps {
   lesson: TestLesson;
   onChange: (updatedLesson: TestLesson) => void;
+  handleDeleteLesson: (lesson: TestLesson) => void;
 }
 
 const TestLessonEditor: React.FC<TestLessonEditorProps> = ({
   lesson,
   onChange,
+  handleDeleteLesson,
 }) => {
   const handleConditionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...lesson, condition: e.target.value });
@@ -27,6 +30,14 @@ const TestLessonEditor: React.FC<TestLessonEditorProps> = ({
 
   return (
     <div>
+      <Box display="flex" alignItems="center" mb={4}>
+        <Typography variant="h5" mr={2}>
+          Урок {lesson.ordinalNumber}: Тест
+        </Typography>
+        <IconButton onClick={() => handleDeleteLesson(lesson)}>
+          <CloseOutlinedIcon />
+        </IconButton>
+      </Box>
       <TextField
         label="Условие"
         value={lesson.condition}

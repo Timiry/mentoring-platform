@@ -14,3 +14,4 @@ export { default as securityApi } from "./security";
 export { default as userApi } from "./users";
 export { default as communicationApi } from "./communication";
 export { default as mentorCatalogApi } from "./mentor-catalog";
+export { default as coursesApi } from "./courses";

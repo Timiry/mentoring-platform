@@ -1,15 +1,18 @@
 import React from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import { CodeLesson } from "../../../../../../types";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
 interface CodeLessonEditorProps {
   lesson: CodeLesson;
   onChange: (updatedLesson: CodeLesson) => void;
+  handleDeleteLesson: (lesson: CodeLesson) => void;
 }
 
 const CodeLessonEditor: React.FC<CodeLessonEditorProps> = ({
   lesson,
   onChange,
+  handleDeleteLesson,
 }) => {
   const handleConditionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...lesson, condition: e.target.value });
@@ -28,6 +31,14 @@ const CodeLessonEditor: React.FC<CodeLessonEditorProps> = ({
 
   return (
     <div>
+      <Box display="flex" alignItems="center" mb={4}>
+        <Typography variant="h5" mr={2}>
+          Урок {lesson.ordinalNumber}: Программирование
+        </Typography>
+        <IconButton onClick={() => handleDeleteLesson(lesson)}>
+          <CloseOutlinedIcon />
+        </IconButton>
+      </Box>
       <TextField
         label="Условие"
         value={lesson.condition}
@@ -51,7 +62,7 @@ const CodeLessonEditor: React.FC<CodeLessonEditorProps> = ({
             }
             variant="outlined"
             fullWidth
-            sx={{ margin: "0 0 25px 25px" }}
+            sx={{ marginBottom: "25px" }}
           />
           <TextField
             label="Вывод"
@@ -61,7 +72,7 @@ const CodeLessonEditor: React.FC<CodeLessonEditorProps> = ({
             }
             variant="outlined"
             fullWidth
-            sx={{ margin: "0 0 25px 25px" }}
+            sx={{ marginBottom: "25px" }}
           />
         </Box>
       ))}
