@@ -30,7 +30,7 @@ const CodeLessonEditor: React.FC<CodeLessonEditorProps> = ({
   };
 
   return (
-    <div>
+    <Box>
       <Box display="flex" alignItems="center" mb={4}>
         <Typography variant="h5" mr={2}>
           Урок {lesson.ordinalNumber}: Программирование
@@ -76,7 +76,7 @@ const CodeLessonEditor: React.FC<CodeLessonEditorProps> = ({
           />
         </Box>
       ))}
-    </div>
+    </Box>
   );
 };
 

@@ -19,15 +19,21 @@ const CourseStructure: React.FC<CourseStructureProps> = ({
         width: "250px",
         // padding: "10px",
         borderRight: "1px solid #ccc",
-        position: "absolute",
+        position: "fixed",
         top: "60px",
         left: "0",
         bottom: "0",
+        backgroundColor: "#2D3047",
       }}
     >
-      <Typography variant="h6" p={2}>
-        {courseTitle}
-      </Typography>
+      <Link
+        href={`/courses/${modules[0].courseId}/edit-content`}
+        sx={{ color: "#ffffff" }}
+      >
+        <Typography variant="h6" p={2}>
+          {courseTitle}
+        </Typography>
+      </Link>
       <List
         sx={{
           overflowY: "auto",
@@ -49,8 +55,8 @@ const CourseStructure: React.FC<CourseStructureProps> = ({
       >
         {modules.map((module) => (
           <div key={module.id}>
-            <Typography variant="subtitle1" pl={2}>
-              {module.title}
+            <Typography variant="subtitle1" pl={2} color="#ffffff">
+              {module.ordinalNumber} {module.title}
             </Typography>
             <List>
               {module.themes.map((theme) => (
@@ -59,7 +65,8 @@ const CourseStructure: React.FC<CourseStructureProps> = ({
                   component={Link}
                   href={`/edit-theme/${theme.id}/lesson/1`}
                   sx={{
-                    paddingLeft: 3,
+                    color: "#ffffff",
+                    paddingLeft: 5,
                     backgroundColor:
                       theme.id === currentThemeId ? "#419D78" : "transparent",
                     "&:hover": {
@@ -68,7 +75,9 @@ const CourseStructure: React.FC<CourseStructureProps> = ({
                     },
                   }}
                 >
-                  <ListItemText primary={theme.title} />
+                  <ListItemText
+                    primary={`${module.ordinalNumber}.${theme.ordinalNumber} ${theme.title}`}
+                  />
                 </ListItem>
               ))}
             </List>

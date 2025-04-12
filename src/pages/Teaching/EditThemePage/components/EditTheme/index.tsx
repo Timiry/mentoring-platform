@@ -34,6 +34,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import CodeIcon from "@mui/icons-material/Code";
 import AddIcon from "@mui/icons-material/Add";
+import SavePanel from "../../../../../components/SavePanel";
 
 interface EditThemeProps {
   theme: Theme;
@@ -215,7 +216,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
   };
 
   return (
-    <div style={{ marginLeft: "200px", padding: "20px", width: "100%" }}>
+    <div style={{ padding: "20px", margin: "20px auto 0", width: "80%" }}>
       <TextField
         label="Название темы"
         value={theme.title}
@@ -355,26 +356,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
       </Box>
 
       {/* панель внизу экрана с кнопкой "сохранить" */}
-      <Box
-        sx={{
-          // width: "100%",
-          //height: "50px",
-          padding: 1,
-          backgroundColor: "#F0F0F0",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "end",
-          position: "absolute",
-          left: "250px",
-          right: "0",
-          bottom: "0",
-        }}
-      >
-        <Button variant="contained" onClick={handleSave}>
-          Сохранить
-        </Button>
-      </Box>
+      <SavePanel handleSave={handleSave} />
 
       {/* Модальное окно для выбора типа урока */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>

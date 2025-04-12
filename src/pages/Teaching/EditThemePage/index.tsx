@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import CourseStructure from "./components/CourseStructure";
 import EditTheme from "./components/EditTheme";
-import MainLayout from "../../../components/layout/Main";
 import { Module, Theme, LessonType } from "../../../types";
 import { coursesApi } from "../../../api";
+import NoMarginsLayout from "../../../components/layout/NoMargins";
 
 const EditThemePage: React.FC = () => {
   const { themeId } = useParams<{ themeId: string }>();
@@ -190,22 +190,20 @@ const EditThemePage: React.FC = () => {
     .find((theme) => theme.id === currentThemeId);
 
   return (
-    <MainLayout>
-      <div style={{ display: "flex" }}>
-        <CourseStructure
-          courseTitle={courseTitle}
-          modules={modules}
-          currentThemeId={currentThemeId}
+    <NoMarginsLayout>
+      {currentTheme && (
+        <EditTheme
+          theme={currentTheme}
+          changeTheme={changeTheme}
+          saveChanges={saveChanges}
         />
-        {currentTheme && (
-          <EditTheme
-            theme={currentTheme}
-            changeTheme={changeTheme}
-            saveChanges={saveChanges}
-          />
-        )}
-      </div>
-    </MainLayout>
+      )}
+      <CourseStructure
+        courseTitle={courseTitle}
+        modules={modules}
+        currentThemeId={currentThemeId}
+      />
+    </NoMarginsLayout>
   );
 };
 

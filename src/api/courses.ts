@@ -19,6 +19,11 @@ export default {
     return response;
   },
 
+  getCoursesByMentorId: async (mentorId: number) => {
+    const response = await axios.get(`/courses?mentor=${mentorId}`); // возможно изменить
+    return response;
+  },
+
   updateCourse: async (courseId: number, course: CourseToCreate) => {
     const response = await axios.put(`/courses/${courseId}`, course);
     return response;

@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 //import EditIcon from "@mui/icons-material/Edit";
-import MainLayout from "../../../components/layout/Main";
-import { Module, ModuleToGet, Theme, ThemeToGet } from "../../../types";
-import { coursesApi } from "../../../api";
+import { Module, ModuleToGet, Theme, ThemeToGet } from "../../../../types";
+import { coursesApi } from "../../../../api";
+import SavePanel from "../../../../components/SavePanel";
 
 const EditCourseContent: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -210,103 +210,94 @@ const EditCourseContent: React.FC = () => {
   };
 
   return (
-    <MainLayout>
-      <Box sx={{ padding: 2, mb: 8 }}>
-        <Typography variant="h4" mb={3}>
-          Программа курса {courseId}
-        </Typography>
-        <List>
-          {modules.map((module, moduleIndex) => (
-            <Box
-              key={moduleIndex}
-              sx={{
-                marginBottom: 2,
-                border: "1px solid #ccc",
-                padding: 2,
-                borderRadius: 1,
-              }}
-            >
-              <Typography variant="h6">
-                {module.ordinalNumber}
+    <Box sx={{ padding: 2, margin: "20px auto 100px", width: "80%" }}>
+      <Typography variant="h4" mb={3}>
+        Программа курса
+      </Typography>
+      <List>
+        {modules.map((module, moduleIndex) => (
+          <Box
+            key={moduleIndex}
+            sx={{
+              marginBottom: 2,
+              border: "1px solid #ccc",
+              padding: 2,
+              borderRadius: 1,
+            }}
+          >
+            <Typography variant="h6">
+              {module.ordinalNumber}
+              <TextField
+                value={module.title}
+                onChange={(e) => {
+                  const updatedModules = [...modules];
+                  updatedModules[moduleIndex].title = e.target.value;
+                  setModules(updatedModules);
+                }}
+                variant="outlined"
+                size="small"
+                sx={{ marginLeft: 1, marginRight: 1 }}
+              />
+              <IconButton onClick={() => handleDeleteModule(module)}>
+                <DeleteIcon />
+              </IconButton>
+            </Typography>
+            <List>
+              {module.themes.map((theme, themeIndex) => (
+                <ListItem key={themeIndex}>
+                  <ListItemText
+                    primary={`${module.ordinalNumber}.${theme.ordinalNumber} ${theme.title}`}
+                  />
+                  {theme.id ? (
+                    <Link
+                      href={`/edit-theme/${theme.id}/lesson/1`}
+                      sx={{ textDecoration: "none", padding: 0 }}
+                    >
+                      Редактировать
+                    </Link>
+                  ) : (
+                    <Typography variant="body2" color="error">
+                      Тема не сохранена
+                    </Typography>
+                  )}
+                  <IconButton
+                    onClick={() => handleDeleteTheme(moduleIndex, themeIndex)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItem>
+              ))}
+              <ListItem>
                 <TextField
-                  value={module.title}
+                  value={module.newThemeTitle}
                   onChange={(e) => {
                     const updatedModules = [...modules];
-                    updatedModules[moduleIndex].title = e.target.value;
+                    updatedModules[moduleIndex].newThemeTitle = e.target.value;
                     setModules(updatedModules);
                   }}
+                  placeholder="Введите название новой темы"
                   variant="outlined"
                   size="small"
-                  sx={{ marginLeft: 1, marginRight: 1 }}
+                  sx={{ flexGrow: 1 }}
                 />
-                <IconButton onClick={() => handleDeleteModule(module)}>
-                  <DeleteIcon />
-                </IconButton>
-              </Typography>
-              <List>
-                {module.themes.map((theme, themeIndex) => (
-                  <ListItem key={themeIndex}>
-                    <ListItemText
-                      primary={`${module.ordinalNumber}.${theme.ordinalNumber} ${theme.title}`}
-                    />
-                    {theme.id ? (
-                      <Link
-                        href={`/edit-theme/${theme.id}/lesson/1`}
-                        sx={{ textDecoration: "none", padding: 0 }}
-                      >
-                        Редактировать
-                      </Link>
-                    ) : (
-                      <Typography variant="body2" color="error">
-                        Тема не сохранена
-                      </Typography>
-                    )}
-                    <IconButton
-                      onClick={() => handleDeleteTheme(moduleIndex, themeIndex)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItem>
-                ))}
-                <ListItem>
-                  <TextField
-                    value={module.newThemeTitle}
-                    onChange={(e) => {
-                      const updatedModules = [...modules];
-                      updatedModules[moduleIndex].newThemeTitle =
-                        e.target.value;
-                      setModules(updatedModules);
-                    }}
-                    placeholder="Введите название новой темы"
-                    variant="outlined"
-                    size="small"
-                    sx={{ flexGrow: 1 }}
-                  />
-                  <Button
-                    onClick={() => handleAddTheme(moduleIndex)}
-                    variant="contained"
-                    disabled={!module.newThemeTitle} // Кнопка активна только если поле не пустое
-                    sx={{ marginLeft: 1 }}
-                  >
-                    Создать тему
-                  </Button>
-                </ListItem>
-              </List>
-            </Box>
-          ))}
-        </List>
-        <Button
-          onClick={handleAddModule}
-          variant="contained"
-          sx={{ margin: 2 }}
-        >
-          Создать модуль
-        </Button>
-        <Button onClick={handleSave} variant="contained" sx={{ margin: 2 }}>
-          Сохранить
-        </Button>
-      </Box>
-    </MainLayout>
+                <Button
+                  onClick={() => handleAddTheme(moduleIndex)}
+                  variant="contained"
+                  disabled={!module.newThemeTitle} // Кнопка активна только если поле не пустое
+                  sx={{ marginLeft: 1 }}
+                >
+                  Создать тему
+                </Button>
+              </ListItem>
+            </List>
+          </Box>
+        ))}
+      </List>
+      <Button onClick={handleAddModule} variant="contained">
+        Создать модуль
+      </Button>
+      <SavePanel handleSave={handleSave} />
+    </Box>
   );
 };
 

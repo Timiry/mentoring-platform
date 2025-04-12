@@ -19,7 +19,7 @@ const VideoLessonEditor: React.FC<VideoLessonEditorProps> = ({
   };
 
   return (
-    <div>
+    <Box>
       <Box display="flex" alignItems="center" mb={4}>
         <Typography variant="h5" mr={2}>
           Урок {lesson.ordinalNumber}: Видео
@@ -35,7 +35,7 @@ const VideoLessonEditor: React.FC<VideoLessonEditorProps> = ({
         variant="outlined"
         fullWidth
       />
-    </div>
+    </Box>
   );
 };
 

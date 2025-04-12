@@ -19,9 +19,8 @@ import { Snackbar } from "@mui/material";
 import Alert from "./components/Alert";
 import { communicationApi } from "./api";
 import { AccountData } from "./types";
-import EditCourseDescription from "./pages/Teaching/EditCourseDescription";
-import EditCourseContent from "./pages/Teaching/EditCourseContent";
 import EditTheme from "./pages/Teaching/EditThemePage";
+import EditCoursePage from "./pages/Teaching/EditCoursePage";
 
 function App() {
   const [open, setOpen] = useState(false);
@@ -91,11 +90,11 @@ function App() {
         <Route path="/teaching" element={<TeachingPage />} />
         <Route
           path="/courses/:courseId/edit-description"
-          element={<EditCourseDescription />}
+          element={<EditCoursePage />}
         />
         <Route
           path="/courses/:courseId/edit-content"
-          element={<EditCourseContent />}
+          element={<EditCoursePage />}
         />
         <Route
           path="/edit-theme/:themeId/lesson/:lessonOrdinalNumber"
