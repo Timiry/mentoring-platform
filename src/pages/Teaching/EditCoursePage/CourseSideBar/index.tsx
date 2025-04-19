@@ -1,4 +1,4 @@
-import { Button, List, ListItem, Typography } from "@mui/material";
+import { Button, IconButton, List, ListItem, Typography } from "@mui/material";
 import SideBar from "../../../../components/SideBar";
 import { Link } from "react-router-dom";
 
@@ -26,10 +26,17 @@ const CourseSideBar = ({
           <Button variant="outlined">Опубликовать</Button>
         </ListItem>
         <ListItem>
-          <Link to={`/courses/${courseId}/edit-description`}>Описание</Link>
+          <IconButton
+            component={Link}
+            to={`/courses/${courseId}/edit-description`}
+          >
+            <Typography>Описание</Typography>
+          </IconButton>
         </ListItem>
         <ListItem>
-          <Link to={`/courses/${courseId}/edit-content`}>Содержание</Link>
+          <IconButton component={Link} to={`/courses/${courseId}/edit-content`}>
+            <Typography>Содержание</Typography>
+          </IconButton>
         </ListItem>
       </List>
     </SideBar>

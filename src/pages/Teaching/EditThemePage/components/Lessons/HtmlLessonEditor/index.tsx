@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import { HtmlLesson } from "../../../../../../types";
 import { EditorState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
 import { convertFromHTML, convertToHTML } from "draft-convert";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import RichTextEditor from "../../../../../../components/RichTextEditor";
 
 interface HtmlLessonEditorProps {
   lesson: HtmlLesson;
@@ -40,7 +40,7 @@ const HtmlLessonEditor: React.FC<HtmlLessonEditorProps> = ({
           <CloseOutlinedIcon />
         </IconButton>
       </Box>
-      <Editor
+      <RichTextEditor
         editorState={editorState}
         onEditorStateChange={handleHtmlChange}
       />

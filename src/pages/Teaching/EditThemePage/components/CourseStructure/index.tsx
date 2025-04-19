@@ -1,6 +1,7 @@
 import React from "react";
 import { List, ListItem, ListItemText, Typography, Link } from "@mui/material";
 import { Module } from "../../../../../types";
+import { MuiTooltip } from "../../../../../components/MuiTooltip";
 
 interface CourseStructureProps {
   courseTitle: string;
@@ -17,7 +18,6 @@ const CourseStructure: React.FC<CourseStructureProps> = ({
     <div
       style={{
         width: "250px",
-        // padding: "10px",
         borderRight: "1px solid #ccc",
         position: "fixed",
         top: "60px",
@@ -28,7 +28,11 @@ const CourseStructure: React.FC<CourseStructureProps> = ({
     >
       <Link
         href={`/courses/${modules[0].courseId}/edit-content`}
-        sx={{ color: "#ffffff" }}
+        sx={{
+          color: "#ffffff",
+          textDecoration: "none",
+          "&:hover": { textDecoration: "underline" },
+        }}
       >
         <Typography variant="h6" p={2}>
           {courseTitle}
@@ -38,47 +42,85 @@ const CourseStructure: React.FC<CourseStructureProps> = ({
         sx={{
           overflowY: "auto",
           maxHeight: "calc(100vh - 180px)",
+          marginRight: "2px",
+          paddingRight: "2px",
           "&::-webkit-scrollbar": {
-            width: "4px", // Ширина полосы прокрутки
+            width: "6px", // Ширина полосы прокрутки
+            marginRight: "2px",
           },
           "&::-webkit-scrollbar-thumb": {
             backgroundColor: "#ccc", // Цвет полосы прокрутки
             borderRadius: "5px", // Закругление углов полосы прокрутки
           },
-          "&::-webkit-scrollbar-thumb:hover": {
-            backgroundColor: "#555", // Цвет полосы прокрутки при наведении
-          },
           "&::-webkit-scrollbar-track": {
-            backgroundColor: "#f1f1f1", // Цвет фона полосы прокрутки
+            backgroundColor: "#2D3047", // Цвет фона полосы прокрутки
           },
         }}
       >
         {modules.map((module) => (
           <div key={module.id}>
-            <Typography variant="subtitle1" pl={2} color="#ffffff">
-              {module.ordinalNumber} {module.title}
-            </Typography>
+            <MuiTooltip
+              title={module.title}
+              arrow
+              placement="right"
+              key={module.id}
+            >
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  color: "#ffffff",
+                  padding: 2,
+                  "&:hover": {
+                    backgroundColor: "#383B57",
+                  },
+                  whiteSpace: "nowrap", // Запретить перенос слов
+                  overflow: "hidden", // Обрезать текст
+                  textOverflow: "ellipsis", // вставить многоточие
+                }}
+              >
+                {module.ordinalNumber} {module.title}
+              </Typography>
+            </MuiTooltip>
             <List>
               {module.themes.map((theme) => (
-                <ListItem
+                <MuiTooltip
+                  title={theme.title}
+                  arrow
+                  placement="right"
                   key={theme.id}
-                  component={Link}
-                  href={`/edit-theme/${theme.id}/lesson/1`}
-                  sx={{
-                    color: "#ffffff",
-                    paddingLeft: 5,
-                    backgroundColor:
-                      theme.id === currentThemeId ? "#419D78" : "transparent",
-                    "&:hover": {
-                      backgroundColor:
-                        theme.id === currentThemeId ? "#419D78" : "#f0f0f0",
-                    },
-                  }}
                 >
-                  <ListItemText
-                    primary={`${module.ordinalNumber}.${theme.ordinalNumber} ${theme.title}`}
-                  />
-                </ListItem>
+                  <ListItem
+                    component={Link}
+                    href={`/edit-theme/${theme.id}/lesson/1`}
+                    sx={{
+                      color: "#ffffff",
+                      paddingLeft: 5,
+                      borderRadius: "1px",
+                      backgroundColor:
+                        theme.id === currentThemeId ? "#419D78" : "transparent",
+                      "&:hover": {
+                        backgroundColor:
+                          theme.id === currentThemeId ? "#419D78" : "#383B57",
+                      },
+                    }}
+                  >
+                    <ListItemText
+                      primary={
+                        <Typography
+                          sx={{
+                            whiteSpace: "nowrap", // Запретить перенос слов
+                            overflow: "hidden", // Обрезать текст
+                            textOverflow: "ellipsis", // Вставить многоточие
+                            display: "block",
+                            width: "100%",
+                          }}
+                        >
+                          {`${module.ordinalNumber}.${theme.ordinalNumber} ${theme.title}`}
+                        </Typography>
+                      }
+                    />
+                  </ListItem>
+                </MuiTooltip>
               ))}
             </List>
           </div>

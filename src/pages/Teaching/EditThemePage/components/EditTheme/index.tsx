@@ -217,6 +217,9 @@ const EditTheme: React.FC<EditThemeProps> = ({
 
   return (
     <div style={{ padding: "20px", margin: "20px auto 0", width: "80%" }}>
+      <Typography variant="h4" mb={3}>
+        Настройки темы
+      </Typography>
       <TextField
         label="Название темы"
         value={theme.title}
@@ -266,7 +269,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
                 "&:hover": {
                   backgroundColor:
                     lesson.ordinalNumber === curLessonOrdinalNumber
-                      ? "darkgreen"
+                      ? "#368163"
                       : "gray",
                 },
                 borderRadius: "8px",
@@ -278,35 +281,31 @@ const EditTheme: React.FC<EditThemeProps> = ({
             </Box>
           </Box>
         ))}
-        <Box
-          component={Button}
-          onClick={handleOpenDialog}
-          sx={{
-            width: "50px",
-            height: "50px",
-            backgroundColor: "#E0A458",
-            color: "white",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            "&:hover": {
-              backgroundColor: "darkblue",
-            },
-            borderRadius: "8px",
-            position: "relative",
-            textDecoration: "none",
-            padding: "0",
-            paddingBlock: "0",
-            paddingInline: "0",
-          }}
-        >
-          <AddIcon />
-        </Box>
+        {theme.fullLessons.length < 12 && (
+          <Box
+            component={Button}
+            onClick={handleOpenDialog}
+            sx={{
+              minWidth: "50px",
+              width: "50px",
+              height: "50px",
+              color: "#E0A458",
+              cursor: "pointer",
+              backgroundColor: "#EFD1A9",
+              "&:hover": {
+                color: "#EFD1A9",
+                backgroundColor: "#E0A458",
+              },
+              borderRadius: "8px",
+              textDecoration: "none",
+            }}
+          >
+            <AddIcon />
+          </Box>
+        )}
       </Box>
 
-      <Box>
+      <Box mb={7}>
         {(() => {
           switch (curLesson.type) {
             case LessonType.HTML:
