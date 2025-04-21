@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -9,7 +8,7 @@ import {
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { CourseToCreate } from "../../../../../types"; // Обновите путь к вашим типам
+import { CourseToCreate } from "../../../../../types";
 
 interface CreateCourseDialogProps {
   open: boolean;
@@ -22,31 +21,15 @@ const CreateCourseDialog: React.FC<CreateCourseDialogProps> = ({
   onClose,
   onCreate,
 }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [completionTimeInHours, setCompletionTimeInHours] = useState<number>(0);
-
-  const handleCreate = () => {
-    const newCourse: CourseToCreate = {
-      title,
-      description,
-      completionTimeInHours,
-    };
-    onCreate(newCourse); // Вызываем функцию для создания курса
-    resetFields(); // Сбрасываем поля
-  };
-
-  const resetFields = () => {
-    setTitle("");
-    setDescription("");
-    setCompletionTimeInHours(0);
-    onClose(); // Закрываем диалог
+  const handleCreate = (values: CourseToCreate) => {
+    onCreate(values);
+    onClose();
   };
 
   const initialValues: CourseToCreate = {
     title: "",
     description: "",
-    completionTimeInHours: 0,
+    completionTimeInHours: 40,
   };
 
   const validationSchema = Yup.object().shape({
@@ -107,7 +90,7 @@ const CreateCourseDialog: React.FC<CreateCourseDialogProps> = ({
                 }
               />
               <DialogActions>
-                <Button onClick={resetFields} color="primary">
+                <Button onClick={onClose} color="primary">
                   Отмена
                 </Button>
                 <Button type="submit" color="primary">

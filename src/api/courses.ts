@@ -10,8 +10,17 @@ export default {
   // курсы
 
   createCourse: async (course: CourseToCreate) => {
-    const response = await axios.post(`/courses`, course);
-    return response;
+    // глупенький мок мок
+    // const response = await axios.post(`/courses`, course);
+    // return response;
+    return {
+      data: {
+        ...course,
+        id: Math.round(Math.random() * 100),
+        authorId: 1,
+        createdAt: "111",
+      },
+    };
   },
 
   getCourseById: async (courseId: number) => {
