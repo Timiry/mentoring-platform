@@ -65,3 +65,144 @@ export interface ChatData {
   firstName: string;
   lastName: string;
 }
+
+export enum LessonType {
+  HTML,
+  VIDEO,
+  TEST,
+  MULTI_TEST,
+  CODE,
+}
+
+export interface LessonToCreate {
+  ordinalNumber: number;
+  type: LessonType;
+  themeId: number;
+}
+
+export interface HtmlLessonToCreate extends LessonToCreate {
+  html: string;
+}
+
+export interface VideoLessonToCreate extends LessonToCreate {
+  videoUrl: string;
+}
+
+export interface CodeLessonToCreate extends LessonToCreate {
+  condition: string;
+  codeTests: CodeTest[];
+}
+
+export interface TestLessonToCreate extends LessonToCreate {
+  condition: string;
+  possibleAnswers: string[];
+  answer: string;
+}
+
+export interface MultiTestLessonToCreate extends LessonToCreate {
+  condition: string;
+  possibleAnswers: string[];
+  correctAnswers: string[];
+}
+
+export type AnyLessonToCreate =
+  | HtmlLessonToCreate
+  | VideoLessonToCreate
+  | TestLessonToCreate
+  | MultiTestLessonToCreate
+  | CodeLessonToCreate;
+
+export interface Lesson extends LessonToCreate {
+  id?: number;
+  wasChanged: boolean;
+}
+
+export interface HtmlLesson extends Lesson {
+  html: string;
+}
+
+export interface VideoLesson extends Lesson {
+  videoUrl: string;
+}
+
+interface CodeTest {
+  input: string;
+  output: string;
+}
+
+export interface CodeLesson extends Lesson {
+  condition: string;
+  codeTests: CodeTest[];
+}
+
+export interface TestLesson extends Lesson {
+  condition: string;
+  possibleAnswers: string[];
+  answer: string;
+}
+
+export interface MultiTestLesson extends Lesson {
+  condition: string;
+  possibleAnswers: string[];
+  correctAnswers: string[];
+}
+
+export type AnyLesson =
+  | HtmlLesson
+  | VideoLesson
+  | TestLesson
+  | MultiTestLesson
+  | CodeLesson;
+
+export interface ShortLesson {
+  id: number;
+  ordinalNumber: number;
+}
+
+export interface ThemeToCreate {
+  title: string;
+  description: string;
+  ordinalNumber: number;
+  moduleId: number;
+  contentType: string;
+}
+
+export interface ThemeToGet extends ThemeToCreate {
+  id?: number;
+  lessons: ShortLesson[];
+}
+
+export interface Theme extends ThemeToGet {
+  wasChanged: boolean;
+  fullLessons: AnyLesson[];
+}
+
+export interface ModuleToCreate {
+  title: string;
+  description: string;
+  ordinalNumber: number;
+  courseId: number;
+}
+
+export interface ModuleToGet extends ModuleToCreate {
+  id?: number;
+}
+
+export interface Module extends ModuleToGet {
+  wasChanged: boolean;
+  newThemeTitle: string;
+  themes: Theme[];
+}
+
+export interface CourseToCreate {
+  title: string;
+  description: string;
+  completionTimeInHours: number;
+  //logo?: File | null;
+}
+
+export interface Course extends CourseToCreate {
+  id: number;
+  createdAt: string;
+  authorId: number;
+}

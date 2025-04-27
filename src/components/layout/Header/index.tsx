@@ -23,6 +23,9 @@ const Header = () => {
             <Button sx={{ color: "button.primary" }} href="/catalog">
               Каталог
             </Button>
+            <Button sx={{ color: "button.primary" }} href="/teaching">
+              Преподавание
+            </Button>
             <Button sx={{ color: "button.primary" }} href="/messenger">
               Мессенджер
             </Button>
