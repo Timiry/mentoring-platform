@@ -1,7 +1,16 @@
-import React from "react";
-import { List, ListItem, ListItemText, Typography, Link } from "@mui/material";
-import { Module } from "../../../../../types";
+import React, { useEffect, useState } from "react";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Link,
+  LinearProgress,
+  Box,
+} from "@mui/material";
+import { ExtendCourseProgress, Module } from "../../../../../types";
 import { MuiTooltip } from "../../../../../components/MuiTooltip";
+import { progressApi } from "../../../../../api";
 
 interface CourseStructureWithProgressProps {
   courseTitle: string;
@@ -12,6 +21,31 @@ interface CourseStructureWithProgressProps {
 const CourseStructureWithProgress: React.FC<
   CourseStructureWithProgressProps
 > = ({ courseTitle, modules, currentThemeId }) => {
+  // потом сделать чтобы менять прогресс при завершении урока
+  const [courseProgress, setCourseProgress] = useState<ExtendCourseProgress>({
+    courseId: 1,
+    completedLessons: 25,
+    totalLessons: 100,
+    progressPercentage: 0.25,
+    completed: false,
+    moduleProgresses: [],
+  });
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const progressResponse = await progressApi.getCourseProgress(
+          modules[0].courseId
+        );
+        setCourseProgress(progressResponse.data);
+      } catch (error) {
+        console.error("Ошибка при получении прогресса курса:", error);
+      }
+    };
+
+    fetchCourses();
+  }, [modules]);
+
   return (
     <div
       style={{
@@ -36,6 +70,26 @@ const CourseStructureWithProgress: React.FC<
           {courseTitle}
         </Typography>
       </Link>
+      <Box px={2}>
+        <Typography color="#ffffff">
+          Прогресс по курсу: {courseProgress?.completedLessons}/
+          {courseProgress?.totalLessons}
+        </Typography>
+        <LinearProgress
+          variant="determinate"
+          value={(courseProgress?.progressPercentage || 0) * 100}
+          sx={{
+            mt: 1,
+            height: 5,
+            borderRadius: 4,
+            backgroundColor: "#ffffff",
+            "& .MuiLinearProgress-bar": {
+              backgroundColor: "button.primary",
+              borderRadius: 4,
+            },
+          }}
+        />
+      </Box>
       <List
         sx={{
           overflowY: "auto",
@@ -89,7 +143,7 @@ const CourseStructureWithProgress: React.FC<
                 >
                   <ListItem
                     component={Link}
-                    href={`/edit-theme/${theme.id}/lesson/1`}
+                    href={`/theme/${theme.id}/lesson/1`}
                     sx={{
                       color: "#ffffff",
                       paddingLeft: 5,
