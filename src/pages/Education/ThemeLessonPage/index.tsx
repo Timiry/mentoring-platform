@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import CourseStructure from "./components/CourseStructure";
-import EditTheme from "./components/EditTheme";
-import { Module, Theme, LessonType } from "../../../types";
-import { coursesApi } from "../../../api";
+import { Module, LessonType } from "../../../types";
 import NoMarginsLayout from "../../../components/layout/NoMargins";
+import CourseStructureWithProgress from "./components/CourseStructureWithProgress";
+import ThemeWithLesson from "./components/ThemeWithLesson";
 
 const EditThemePage: React.FC = () => {
   const { themeId } = useParams<{ themeId: string }>();
@@ -181,53 +180,40 @@ const EditThemePage: React.FC = () => {
     },
   ]);
 
-  const changeTheme = (updatedTheme: Theme) => {
-    const updatedModules = modules.map((module) => {
-      const updatedThemes = module.themes.map((t) =>
-        t.id === updatedTheme.id ? updatedTheme : t
-      );
-      return { ...module, themes: updatedThemes };
-    });
-    setModules(updatedModules);
-  };
-
-  const saveChanges = (themeId: number, deletedLessonsIds: number[]) => {
-    const theme = modules
-      .flatMap((module) => module.themes)
-      .find((theme) => theme.id === themeId);
-    if (!theme) {
-      console.error(`Тема с id ${themeId} не найдена.`);
-      return; // Выход из функции, если тема не найдена
-    }
-    try {
-      coursesApi.updateTheme(themeId, theme);
-      // удаление уроков
-      deletedLessonsIds.forEach((id) => {
-        coursesApi.deleteLesson(id);
-      });
-
-      //создание и сохранение уроков
-      theme.fullLessons.forEach(async (lesson) => {
-        if (!lesson.id) {
-          const newLessonRequest = await coursesApi.createLesson(lesson);
-          lesson.id = newLessonRequest.data.id;
-          console.log(
-            `Создание нового урока: ${lesson.ordinalNumber} ${lesson.type}`
-          );
-        } else if (lesson.wasChanged) {
-          coursesApi.updateLesson(lesson.id, lesson);
-          console.log(
-            `Изменение урока: ${lesson.ordinalNumber} ${lesson.type}`
-          );
-          lesson.wasChanged = false;
-        }
-      });
-    } catch (error) {
-      console.error("Ошибка при сохранении темы:", error);
-      throw error; // Пробрасываем ошибку дальше
-    }
-  };
-
+  if (!modules)
+    setModules([
+      {
+        id: 1,
+        title: "Модуль 1",
+        ordinalNumber: 1,
+        themes: [
+          {
+            id: 1,
+            title: "Тема 1",
+            ordinalNumber: 1,
+            wasChanged: false,
+            fullLessons: [
+              {
+                id: 1,
+                ordinalNumber: 1,
+                type: LessonType.HTML,
+                themeId: 1,
+                wasChanged: false,
+                html: "<h1>Пример текстового урока</h1>",
+              },
+            ],
+            lessons: [],
+            description: "",
+            moduleId: 0,
+            contentType: "",
+          },
+        ],
+        wasChanged: false,
+        newThemeTitle: "",
+        description: "",
+        courseId: 0,
+      },
+    ]);
   // Найти текущую тему по ID
   const currentTheme = modules
     .flatMap((module) => module.themes)
@@ -235,14 +221,8 @@ const EditThemePage: React.FC = () => {
 
   return (
     <NoMarginsLayout>
-      {currentTheme && (
-        <EditTheme
-          theme={currentTheme}
-          changeTheme={changeTheme}
-          saveChanges={saveChanges}
-        />
-      )}
-      <CourseStructure
+      {currentTheme && <ThemeWithLesson theme={currentTheme} />}
+      <CourseStructureWithProgress
         courseTitle={courseTitle}
         modules={modules}
         currentThemeId={currentThemeId}

@@ -8,7 +8,7 @@ const NoMarginsLayout = ({ children }: PropsWithChildren) => {
       <Header />
       <Box
         sx={{
-          padding: "60px 0 0 300px",
+          padding: "60px 0 0 250px",
           margin: "0",
           display: "flex",
         }}
