@@ -1,7 +1,17 @@
-import React from "react";
-import { Box, Typography, Button, Avatar } from "@mui/material";
-import { MentorDataToShow } from "../../../../types";
-import { communicationApi } from "../../../../api";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Avatar,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+} from "@mui/material";
+import { Course, MentorDataToShow } from "../../../../types";
+import { communicationApi, coursesApi } from "../../../../api";
 import { useNavigate } from "react-router-dom";
 import chekTokens from "../../../../services/CheckTokens";
 
@@ -11,6 +21,30 @@ interface MentorDetailProps {
 
 const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
   const navigate = useNavigate();
+
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  useEffect(() => {
+    const fetchMentorCourses = async () => {
+      try {
+        chekTokens();
+        const coursesRequest = await coursesApi.getCoursesByMentorId(
+          mentor.userId
+        );
+        setCourses(coursesRequest.data);
+      } catch (error) {
+        console.error("Ошибка при загрузке курсов ментора:", error);
+      }
+    };
+
+    fetchMentorCourses();
+  }, [mentor]);
+
+  const handleApply = (courseId: number) => {
+    // Обработчик подачи заявки на курс
+    console.log(`Заявка на курс ${courseId} отправлена`);
+    // В реальном приложении здесь будет вызов API
+  };
 
   const openChat = async (userId: number) => {
     try {
@@ -80,22 +114,85 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
                         Количество студентов: {mentor.studentsCount}
                     </Typography> */}
         </Box>
+        <Box width="100%" display="flex" justifyContent="end">
+          <Button
+            variant="contained"
+            size="large"
+            sx={{ bgcolor: "button.primary" }}
+            onClick={() => openChat(mentor.userId)}
+          >
+            Связаться с ментором
+          </Button>
+        </Box>
       </Box>
-      <Typography variant="h6">Краткая информация:</Typography>
-      <Typography variant="body1" sx={{ marginBottom: 2 }}>
-        {mentor.shortAboutMe}
-      </Typography>
-      <Typography variant="h6">Подробная информация:</Typography>
-      <Typography variant="body1" sx={{ marginBottom: 2 }}>
-        {mentor.longAboutMe}
-      </Typography>
-      <Button
-        variant="contained"
-        sx={{ bgcolor: "button.primary" }}
-        onClick={() => openChat(mentor.userId)}
-      >
-        Написать
-      </Button>
+      <Box display="flex">
+        <Box maxWidth="450px">
+          <Typography variant="h6" mb={2}>
+            Краткая информация:
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 2 }}>
+            {mentor.shortAboutMe}
+          </Typography>
+          <Typography variant="h6" mb={2}>
+            Подробная информация:
+          </Typography>
+          <Typography variant="body1" sx={{ marginBottom: 2 }}>
+            {mentor.longAboutMe}
+          </Typography>
+        </Box>
+        <Box width="600px">
+          <Typography variant="h6" sx={{ ml: 2 }}>
+            Курсы ментора
+          </Typography>
+          <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+            {courses.map((course) => (
+              <React.Fragment key={course.id}>
+                <ListItem
+                  alignItems="flex-start"
+                  secondaryAction={
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => handleApply(course.id)}
+                      sx={{
+                        color: "button.primary",
+                        borderColor: "button.primary",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Подать заявку
+                    </Button>
+                  }
+                >
+                  <ListItemAvatar>
+                    <Avatar alt={course.title} src={course?.logo} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={course.title}
+                    secondary={
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          display: "inline-block",
+                          width: "380px",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {course.description}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </React.Fragment>
+            ))}
+          </List>
+        </Box>
+      </Box>
     </Box>
   );
 };

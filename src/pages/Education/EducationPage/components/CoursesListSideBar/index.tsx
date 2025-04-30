@@ -1,31 +1,16 @@
-import { Button, IconButton, List, ListItem, Typography } from "@mui/material";
+import { IconButton, List, ListItem, Typography } from "@mui/material";
 import SideBar from "../../../../../components/SideBar";
 import { Link } from "react-router-dom";
 import ImportContactsIcon from "@mui/icons-material/ImportContacts";
 import SchoolIcon from "@mui/icons-material/School";
 
-interface CoursesListSideBarProps {
-  handleOpenDialog: () => void;
-}
-
-const CoursesListSideBar: React.FC<CoursesListSideBarProps> = ({
-  handleOpenDialog,
-}) => {
+const CoursesListSideBar: React.FC = () => {
   return (
     <SideBar>
       <List>
         {/* мб добавить картинку для красоты */}
         <ListItem>
-          <Button
-            variant="outlined"
-            onClick={handleOpenDialog}
-            sx={{ color: "button.primary", borderColor: "button.primary" }}
-          >
-            Создать курс
-          </Button>
-        </ListItem>
-        <ListItem>
-          <IconButton component={Link} to={"/teaching"}>
+          <IconButton component={Link} to={"/education"}>
             <ImportContactsIcon />
             <Typography pl="10px">Курсы</Typography>
           </IconButton>
@@ -33,7 +18,7 @@ const CoursesListSideBar: React.FC<CoursesListSideBarProps> = ({
         <ListItem>
           <IconButton component={Link} to={""}>
             <SchoolIcon />
-            <Typography pl="10px">Ученики</Typography>
+            <Typography pl="10px">Менторы</Typography>
           </IconButton>
         </ListItem>
       </List>

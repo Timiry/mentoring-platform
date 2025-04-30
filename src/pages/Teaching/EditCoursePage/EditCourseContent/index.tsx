@@ -12,7 +12,6 @@ import {
   Link,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-//import EditIcon from "@mui/icons-material/Edit";
 import { Module, ModuleToGet, Theme, ThemeToGet } from "../../../../types";
 import { coursesApi } from "../../../../api";
 import SavePanel from "../../../../components/SavePanel";
@@ -20,30 +19,7 @@ import SavePanel from "../../../../components/SavePanel";
 const EditCourseContent: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const curCourseId = courseId ? parseInt(courseId) : 1;
-  const [modules, setModules] = useState<Module[]>([
-    {
-      id: 1,
-      title: "Модуль 1",
-      ordinalNumber: 1,
-      themes: [
-        {
-          id: 1,
-          title: "Тема 1",
-          ordinalNumber: 1,
-          moduleId: 1,
-          fullLessons: [],
-          description: "",
-          lessons: [],
-          contentType: "",
-          wasChanged: false,
-        },
-      ],
-      wasChanged: false,
-      newThemeTitle: "",
-      description: "",
-      courseId: curCourseId,
-    },
-  ]);
+  const [modules, setModules] = useState<Module[]>([]);
 
   useEffect(() => {
     const getModulesWithThemesByCourseId = async (courseId: number) => {
@@ -236,7 +212,7 @@ const EditCourseContent: React.FC = () => {
                 }}
                 variant="outlined"
                 size="small"
-                sx={{ marginLeft: 1, marginRight: 1 }}
+                sx={{ marginLeft: 1, marginRight: 1, width: "400px" }}
               />
               <IconButton onClick={() => handleDeleteModule(module)}>
                 <DeleteIcon />
@@ -251,7 +227,11 @@ const EditCourseContent: React.FC = () => {
                   {theme.id ? (
                     <Link
                       href={`/edit-theme/${theme.id}/lesson/1`}
-                      sx={{ textDecoration: "none", padding: 0 }}
+                      sx={{
+                        textDecoration: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                      }}
                     >
                       Редактировать
                     </Link>
@@ -284,7 +264,7 @@ const EditCourseContent: React.FC = () => {
                   onClick={() => handleAddTheme(moduleIndex)}
                   variant="contained"
                   disabled={!module.newThemeTitle} // Кнопка активна только если поле не пустое
-                  sx={{ marginLeft: 1 }}
+                  sx={{ marginLeft: 1, bgcolor: "button.primary" }}
                 >
                   Создать тему
                 </Button>
@@ -293,7 +273,11 @@ const EditCourseContent: React.FC = () => {
           </Box>
         ))}
       </List>
-      <Button onClick={handleAddModule} variant="contained">
+      <Button
+        onClick={handleAddModule}
+        variant="contained"
+        sx={{ bgcolor: "button.primary" }}
+      >
         Создать модуль
       </Button>
       <SavePanel handleSave={handleSave} />

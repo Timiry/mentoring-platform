@@ -5,19 +5,19 @@ import {
   TextField,
   Typography,
   Button,
-  Checkbox,
+  Radio,
 } from "@mui/material";
-import { MultiTestLesson } from "../../../../../../types";
+import { TestLesson } from "../../../../../../types";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import AddIcon from "@mui/icons-material/Add";
 
-interface MultiTestLessonEditorProps {
-  lesson: MultiTestLesson;
-  onChange: (updatedLesson: MultiTestLesson) => void;
-  handleDeleteLesson: (lesson: MultiTestLesson) => void;
+interface TestLessonEditorProps {
+  lesson: TestLesson;
+  onChange: (updatedLesson: TestLesson) => void;
+  handleDeleteLesson: (lesson: TestLesson) => void;
 }
 
-const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
+const TestLessonEditor: React.FC<TestLessonEditorProps> = ({
   lesson,
   onChange,
   handleDeleteLesson,
@@ -26,38 +26,30 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
     onChange({ ...lesson, condition: e.target.value });
   };
 
-  const handleAnswerToggle = (index: number) => {
-    const answer = lesson.possibleAnswers[index];
-    const isCurrentlyCorrect = lesson.correctAnswers.includes(answer);
-
-    let updatedCorrectAnswers;
-    if (isCurrentlyCorrect) {
-      updatedCorrectAnswers = lesson.correctAnswers.filter((a) => a !== answer);
-    } else {
-      updatedCorrectAnswers = [...lesson.correctAnswers, answer];
+  const handleAnswerChange = (index: number) => {
+    if (index >= 0 && index < lesson.possibleAnswers.length) {
+      onChange({
+        ...lesson,
+        answer: lesson.possibleAnswers[index],
+      });
     }
-
-    onChange({
-      ...lesson,
-      correctAnswers: updatedCorrectAnswers,
-    });
   };
 
   const handlePossibleAnswerChange = (index: number, value: string) => {
     const updatedAnswers = [...lesson.possibleAnswers];
-    const oldValue = updatedAnswers[index];
     updatedAnswers[index] = value;
 
-    // Обновляем correctAnswers если изменяемый ответ был правильным
-    const updatedCorrectAnswers = lesson.correctAnswers.includes(oldValue)
-      ? lesson.correctAnswers.map((a) => (a === oldValue ? value : a))
-      : lesson.correctAnswers;
-
-    onChange({
+    const updatedLesson = {
       ...lesson,
       possibleAnswers: updatedAnswers,
-      correctAnswers: updatedCorrectAnswers,
-    });
+    };
+
+    // Если редактируем правильный ответ, обновляем и его
+    if (lesson.answer === lesson.possibleAnswers[index]) {
+      updatedLesson.answer = value;
+    }
+
+    onChange(updatedLesson);
   };
 
   const addAnswer = () => {
@@ -71,21 +63,20 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
 
   const removeAnswer = (index: number) => {
     if (lesson.possibleAnswers.length > 2) {
-      const answerToRemove = lesson.possibleAnswers[index];
       const updatedAnswers = lesson.possibleAnswers.filter(
         (_, i) => i !== index
       );
-
-      // Удаляем ответ из correctAnswers если он там был
-      const updatedCorrectAnswers = lesson.correctAnswers.filter(
-        (a) => a !== answerToRemove
-      );
-
-      onChange({
+      const updatedLesson = {
         ...lesson,
         possibleAnswers: updatedAnswers,
-        correctAnswers: updatedCorrectAnswers,
-      });
+      };
+
+      // Если удаляем правильный ответ, сбрасываем выбор
+      if (lesson.answer === lesson.possibleAnswers[index]) {
+        updatedLesson.answer = updatedLesson.possibleAnswers[0];
+      }
+
+      onChange(updatedLesson);
     }
   };
 
@@ -93,7 +84,7 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
     <Box>
       <Box display="flex" alignItems="center" mb={4}>
         <Typography variant="h5" mr={2}>
-          Урок {lesson.ordinalNumber}: Множественный тест
+          Урок {lesson.ordinalNumber}: Тест
         </Typography>
         <IconButton onClick={() => handleDeleteLesson(lesson)}>
           <CloseOutlinedIcon />
@@ -112,7 +103,7 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
       />
 
       <Typography variant="subtitle1" gutterBottom>
-        Варианты ответов (отметьте правильные):
+        Варианты ответов:
       </Typography>
 
       {lesson.possibleAnswers.map((answer, index) => (
@@ -127,9 +118,9 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
             borderRadius: "4px",
           }}
         >
-          <Checkbox
-            checked={lesson.correctAnswers.includes(answer)}
-            onChange={() => handleAnswerToggle(index)}
+          <Radio
+            checked={lesson.answer === answer}
+            onChange={() => handleAnswerChange(index)}
           />
 
           <TextField
@@ -141,13 +132,13 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
             sx={{
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
-                  border: "none",
+                  border: "none", // Убираем границу
                 },
                 "&:hover fieldset": {
-                  border: "none",
+                  border: "none", // Убираем границу при наведении
                 },
                 "&.Mui-focused fieldset": {
-                  border: "none",
+                  border: "none", // Убираем границу при фокусе
                 },
               },
             }}
@@ -163,7 +154,7 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
         variant="outlined"
         startIcon={<AddIcon />}
         onClick={addAnswer}
-        sx={{ mt: 1, color: "button.primary", borderColor: "button.primary" }}
+        sx={{ mt: 1 }}
       >
         Добавить вариант ответа
       </Button>
@@ -171,4 +162,4 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
   );
 };
 
-export default MultiTestLessonEditor;
+export default TestLessonEditor;

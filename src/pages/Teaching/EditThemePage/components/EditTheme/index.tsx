@@ -216,7 +216,7 @@ const EditTheme: React.FC<EditThemeProps> = ({
   };
 
   return (
-    <div style={{ padding: "20px", margin: "20px auto 0", width: "80%" }}>
+    <div style={{ margin: "40px auto", width: "80%" }}>
       <Typography variant="h4" mb={3}>
         Настройки темы
       </Typography>

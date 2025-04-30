@@ -14,20 +14,23 @@ import {
   Button,
   DialogContentText,
   DialogContent,
+  LinearProgress,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Course } from "../../../../../types";
+import { Course, ExtendCourseProgress } from "../../../../../types";
 
 interface CourseListProps {
   courses: Course[];
-  handleConfirmDelete: (selectedCourse: Course | null) => void;
+  coursesProgress: ExtendCourseProgress[];
+  handleConfirmLeave: (selectedCourse: Course | null) => void;
 }
 
 const CoursesList: React.FC<CourseListProps> = ({
   courses,
-  handleConfirmDelete,
+  coursesProgress,
+  handleConfirmLeave,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -45,7 +48,7 @@ const CoursesList: React.FC<CourseListProps> = ({
     setAnchorEl(null);
   };
 
-  const handleDeleteClick = () => {
+  const handleLeaveClick = () => {
     setOpenDialog(true);
     handleCloseMenu();
   };
@@ -57,7 +60,7 @@ const CoursesList: React.FC<CourseListProps> = ({
   return (
     <Box sx={{ padding: 2, ml: "120px", mt: "10px", width: "70%" }}>
       <Typography variant="h4" mb={3} pl="16px">
-        Курсы
+        Текущие курсы
       </Typography>
       <List>
         {courses.map((course) => (
@@ -66,9 +69,24 @@ const CoursesList: React.FC<CourseListProps> = ({
             sx={{ position: "relative", marginBottom: 2 }}
             divider
             secondaryAction={
-              <IconButton onClick={(event) => handleClick(event, course)}>
-                <MoreVertIcon />
-              </IconButton>
+              <Box display="flex" flexDirection="column" alignItems="end">
+                <IconButton onClick={(event) => handleClick(event, course)}>
+                  <MoreVertIcon />
+                </IconButton>
+                <Button
+                  sx={{
+                    m: 1,
+                    color: "button.primary",
+                    borderColor: "button.primary",
+                  }}
+                  size="small"
+                  variant="outlined"
+                  component={Link}
+                  to={`/theme/${1}/lesson/${1}`}
+                >
+                  Продожить
+                </Button>
+              </Box>
             }
           >
             <ListItemIcon>
@@ -90,42 +108,64 @@ const CoursesList: React.FC<CourseListProps> = ({
                 </IconButton>
               }
               secondary={
-                <Box>
-                  <IconButton
-                    component={Link}
-                    to={`/courses/${course.id}/edit-description`}
-                  >
-                    <Typography variant="body2">Описание</Typography>
-                  </IconButton>
-                  <IconButton
-                    component={Link}
-                    to={`/courses/${course.id}/edit-content`}
-                  >
-                    <Typography variant="body2">Содержание</Typography>
-                  </IconButton>
+                <Box sx={{ mt: 1, ml: 1 }}>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Box sx={{ width: "50%", mr: 1 }}>
+                      <LinearProgress
+                        variant="determinate"
+                        value={
+                          coursesProgress.find(
+                            (progress) => progress.courseId === course.id
+                          )?.progressPercentage || 0
+                        }
+                        sx={{
+                          mt: 1,
+                          height: 5,
+                          borderRadius: 4,
+                          backgroundColor: "#A9DBC7",
+                          "& .MuiLinearProgress-bar": {
+                            backgroundColor: "button.primary",
+                            borderRadius: 4,
+                          },
+                        }}
+                      />
+                    </Box>
+                    <Typography variant="body2" color="text.secondary">
+                      {coursesProgress.find(
+                        (progress) => progress.courseId === course.id
+                      )?.completedLessons || 0}
+                      /
+                      {coursesProgress.find(
+                        (progress) => progress.courseId === course.id
+                      )?.totalLessons || 0}{" "}
+                      уроков пройдено
+                    </Typography>
+                  </Box>
                 </Box>
               }
             />
           </ListItem>
         ))}
       </List>
-      {/* Меню для удаления курса */}
+
+      {/* Меню для покидания курса */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={handleDeleteClick}>Удалить</MenuItem>
+        <MenuItem onClick={handleLeaveClick}>Покинуть</MenuItem>
       </Menu>
 
-      {/* Диалоговое окно подтверждения удаления */}
+      {/* Диалоговое окно подтверждения покидания курса*/}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>
-          Удалить курс &quot;{selectedCourse?.title}&quot;?
+          Покинуть курс &quot;{selectedCourse?.title}&quot;?
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Вы и ваши ученики потеряете доступ ко всем материалам курса.
+            Вы потеряете доступ ко всем материалам курса и ваш прогресс не
+            сохранится.
           </DialogContentText>
         </DialogContent>
         <DialogActions
@@ -133,13 +173,13 @@ const CoursesList: React.FC<CourseListProps> = ({
         >
           <Button
             onClick={() => {
-              handleConfirmDelete(selectedCourse);
+              handleConfirmLeave(selectedCourse);
               handleCloseDialog();
             }}
             color="primary"
             variant="contained"
           >
-            Удалить
+            Покинуть
           </Button>
           <Button
             onClick={handleCloseDialog}

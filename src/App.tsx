@@ -21,6 +21,8 @@ import { communicationApi } from "./api";
 import { AccountData } from "./types";
 import EditTheme from "./pages/Teaching/EditThemePage";
 import EditCoursePage from "./pages/Teaching/EditCoursePage";
+import EducationPage from "./pages/Education/EducationPage";
+import ThemeLessonPage from "./pages/Education/ThemeLessonPage";
 
 function App() {
   const [open, setOpen] = useState(false);
@@ -100,6 +102,11 @@ function App() {
           path="/edit-theme/:themeId/lesson/:lessonOrdinalNumber"
           element={<EditTheme />}
         />
+        <Route
+          path="/theme/:themeId/lesson/:lessonOrdinalNumber"
+          element={<ThemeLessonPage />}
+        />
+        <Route path="/education" element={<EducationPage />} />
         <Route path="/logout" element={<LogoutPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

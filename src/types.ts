@@ -198,11 +198,37 @@ export interface CourseToCreate {
   title: string;
   description: string;
   completionTimeInHours: number;
-  //logo?: File | null;
+  logo?: string;
 }
 
 export interface Course extends CourseToCreate {
   id: number;
   createdAt: string;
   authorId: number;
+}
+
+export interface LessonProgress {
+  lessonId: number;
+  completed: boolean;
+}
+
+export interface ThemeProgress {
+  themeId: number;
+  completed: boolean;
+  lessonProgress: LessonProgress[];
+}
+
+export interface ModuleProgress {
+  moduleId: number;
+  completed: boolean;
+  themeProgress: LessonProgress[];
+}
+
+export interface ExtendCourseProgress {
+  courseId: number;
+  completedLessons: number;
+  totalLessons: number;
+  progressPercentage: number;
+  completed: boolean;
+  moduleProgresses: ModuleProgress[];
 }
