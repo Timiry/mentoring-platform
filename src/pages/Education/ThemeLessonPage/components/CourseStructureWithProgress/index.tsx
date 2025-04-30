@@ -22,14 +22,7 @@ const CourseStructureWithProgress: React.FC<
   CourseStructureWithProgressProps
 > = ({ courseTitle, modules, currentThemeId }) => {
   // потом сделать чтобы менять прогресс при завершении урока
-  const [courseProgress, setCourseProgress] = useState<ExtendCourseProgress>({
-    courseId: 1,
-    completedLessons: 25,
-    totalLessons: 100,
-    progressPercentage: 0.25,
-    completed: false,
-    moduleProgresses: [],
-  });
+  const [courseProgress, setCourseProgress] = useState<ExtendCourseProgress>();
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -77,7 +70,7 @@ const CourseStructureWithProgress: React.FC<
         </Typography>
         <LinearProgress
           variant="determinate"
-          value={(courseProgress?.progressPercentage || 0) * 100}
+          value={courseProgress?.progressPercentage || 0}
           sx={{
             mt: 1,
             height: 5,

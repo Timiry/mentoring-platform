@@ -1,22 +1,20 @@
-import axios from "./index";
+import api from "./index";
 
 export default {
   createChat: async () => {
-    const response = await axios.post(`/chats`);
+    const response = await api.post(`/chats`);
     return response;
   },
 
   inviteUserToChat: async (chatId: string, userId: number) => {
-    const response = await axios.post(
-      `/chats/${chatId}/invite?userId=${userId}`
-    );
+    const response = await api.post(`/chats/${chatId}/invite?userId=${userId}`);
     return response;
   },
 
   uploadAttachment: async (chatId: string, file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await axios.post(
+    const response = await api.post(
       `/chats/${chatId}/attachments/upload`,
       formData,
       {
@@ -29,17 +27,17 @@ export default {
   },
 
   getUserChats: async () => {
-    const response = await axios.get(`/chats`);
+    const response = await api.get(`/chats`);
     return response;
   },
 
   getChatUsers: async (chatId: string) => {
-    const response = await axios.get(`/chats/${chatId}/users`);
+    const response = await api.get(`/chats/${chatId}/users`);
     return response;
   },
 
   getChatMessages: async (chatId: string, page: number, size: number) => {
-    const response = await axios.get(
+    const response = await api.get(
       `/messages/${chatId}?page=${page}&size=${size}`
     );
     return response;

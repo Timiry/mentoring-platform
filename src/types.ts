@@ -198,7 +198,7 @@ export interface CourseToCreate {
   title: string;
   description: string;
   completionTimeInHours: number;
-  //logo?: File | null;
+  logo?: string;
 }
 
 export interface Course extends CourseToCreate {

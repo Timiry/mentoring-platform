@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import { Box, Typography, TextField } from "@mui/material";
 import { MentorDataToShow } from "../../../../types";
 import MentorCard from "../MentorCard";
 import { mentorCatalogApi } from "../../../../api";
-import CreateMentorDialog from "../../../BecomeMentor";
 import chekTokens from "../../../../services/CheckTokens";
 
 const MentorCatalog: React.FC = () => {
   const [mentors, setMentors] = useState<MentorDataToShow[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchMentors = async () => {
@@ -31,25 +28,13 @@ const MentorCatalog: React.FC = () => {
 
   return (
     <Box sx={{ padding: 2, mb: 8 }}>
-      <Box
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        mb={3}
-      >
-        <Typography variant="h4">Каталог менторов</Typography>
-        <Button
-          sx={{ bgcolor: "button.primary" }}
-          variant="contained"
-          onClick={() => setDialogOpen(true)}
-        >
-          Стать ментором
-        </Button>
-      </Box>
+      <Typography variant="h4" mb={3}>
+        Каталог менторов
+      </Typography>
 
       <Box sx={{ marginBottom: 2 }}>
         <TextField
-          label="Введите специализацию"
+          label="Введите специализацию для поиска"
           variant="outlined"
           fullWidth
           value={searchTerm}
@@ -74,10 +59,6 @@ const MentorCatalog: React.FC = () => {
           </Box>
         ))}
       </Box>
-      <CreateMentorDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-      />
     </Box>
   );
 };

@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 
 const CourseSideBar = ({
   courseTitle,
+  logo,
   courseId,
 }: {
   courseTitle: string;
+  logo: string;
   courseId: number;
 }) => {
   return (
@@ -14,16 +16,21 @@ const CourseSideBar = ({
       <List>
         <ListItem>
           <img
-            src="/logo.png"
+            src={logo}
             alt={courseTitle}
-            style={{ width: 50, height: 50 }}
+            style={{ width: 50, height: 50, borderRadius: "4px" }}
           />
         </ListItem>
         <ListItem>
           <Typography variant="h6">{courseTitle}</Typography>
         </ListItem>
         <ListItem>
-          <Button variant="outlined">Опубликовать</Button>
+          <Button
+            variant="outlined"
+            sx={{ color: "button.primary", borderColor: "button.primary" }}
+          >
+            Опубликовать
+          </Button>
         </ListItem>
         <ListItem>
           <IconButton

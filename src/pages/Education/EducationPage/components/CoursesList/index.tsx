@@ -91,9 +91,9 @@ const CoursesList: React.FC<CourseListProps> = ({
           >
             <ListItemIcon>
               <img
-                src={"/logo.png"}
+                src={course.logo}
                 alt={course.title}
-                style={{ width: 50, height: 50 }}
+                style={{ width: 50, height: 50, borderRadius: "4px" }}
               />
             </ListItemIcon>
             <ListItemText
@@ -114,11 +114,20 @@ const CoursesList: React.FC<CourseListProps> = ({
                       <LinearProgress
                         variant="determinate"
                         value={
-                          (coursesProgress.find(
+                          coursesProgress.find(
                             (progress) => progress.courseId === course.id
-                          )?.progressPercentage || 0) * 100
+                          )?.progressPercentage || 0
                         }
-                        sx={{ height: 5, borderRadius: 4 }}
+                        sx={{
+                          mt: 1,
+                          height: 5,
+                          borderRadius: 4,
+                          backgroundColor: "#A9DBC7",
+                          "& .MuiLinearProgress-bar": {
+                            backgroundColor: "button.primary",
+                            borderRadius: 4,
+                          },
+                        }}
                       />
                     </Box>
                     <Typography variant="body2" color="text.secondary">
@@ -128,7 +137,8 @@ const CoursesList: React.FC<CourseListProps> = ({
                       /
                       {coursesProgress.find(
                         (progress) => progress.courseId === course.id
-                      )?.totalLessons || 0}
+                      )?.totalLessons || 0}{" "}
+                      уроков пройдено
                     </Typography>
                   </Box>
                 </Box>

@@ -6,81 +6,11 @@ import { Course, ExtendCourseProgress } from "../../../types";
 import { progressApi } from "../../../api";
 
 const EducationPage: React.FC = () => {
-  const [courses, setCourses] = useState<Course[]>([
-    {
-      id: 1,
-      title: "Курс 1",
-      description: "Описание 1",
-      authorId: 1,
-      completionTimeInHours: 50,
-      createdAt: "2024-12-03T10:15:30+01:00",
-      //logo: "/logo.png",
-    },
-    {
-      id: 2,
-      title: "Курс 2",
-      description: "Описание 2",
-      authorId: 1,
-      completionTimeInHours: 50,
-      createdAt: "2024-12-03T10:15:30+01:00",
-      //logo: "/logo.png",
-    },
-    {
-      id: 3,
-      title: "Курс 3",
-      description: "Описание 3",
-      authorId: 1,
-      completionTimeInHours: 50,
-      createdAt: "2024-12-03T10:15:30+01:00",
-      //logo: "/logo.png",
-    },
-    {
-      id: 4,
-      title: "Курс 4",
-      description: "Описание 1",
-      authorId: 1,
-      completionTimeInHours: 50,
-      createdAt: "2024-12-03T10:15:30+01:00",
-      //logo: "/logo.png",
-    },
-  ]);
+  const [courses, setCourses] = useState<Course[]>([]);
 
   const [coursesProgress, setCoursesProgress] = useState<
     ExtendCourseProgress[]
-  >([
-    {
-      courseId: 1,
-      completedLessons: 25,
-      totalLessons: 100,
-      progressPercentage: 0.25,
-      completed: false,
-      moduleProgresses: [],
-    },
-    {
-      courseId: 2,
-      completedLessons: 25,
-      totalLessons: 100,
-      progressPercentage: 0.25,
-      completed: false,
-      moduleProgresses: [],
-    },
-    {
-      courseId: 3,
-      completedLessons: 25,
-      totalLessons: 100,
-      progressPercentage: 0.25,
-      completed: false,
-      moduleProgresses: [],
-    },
-    {
-      courseId: 4,
-      completedLessons: 25,
-      totalLessons: 100,
-      progressPercentage: 0.25,
-      completed: false,
-      moduleProgresses: [],
-    },
-  ]);
+  >([]);
 
   const userId = 1; // временно
 

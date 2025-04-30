@@ -13,9 +13,9 @@ const EditCoursePage = () => {
   const mode = useLocation().pathname.split("/").filter(Boolean).pop();
 
   const [course, setCourse] = useState<CourseToCreate>({
-    title: "Курсик мурсик",
-    description: "мяу",
-    completionTimeInHours: 0,
+    title: "",
+    description: "",
+    completionTimeInHours: 40,
   });
 
   useEffect(() => {
@@ -33,7 +33,11 @@ const EditCoursePage = () => {
 
   return (
     <NoMarginsLayout>
-      <CourseSideBar courseTitle={course.title} courseId={curCourseId} />
+      <CourseSideBar
+        courseTitle={course.title}
+        courseId={curCourseId}
+        logo={course.logo || ""}
+      />
       {(() => {
         switch (mode) {
           case "edit-description":

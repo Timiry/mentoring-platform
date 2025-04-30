@@ -1,11 +1,11 @@
 import { AnyLesson } from "../types";
-import axios from "./index";
+import api from "./index";
 
 export default {
   // взаимодействие с курсами и прогресс
 
   assignUserToCourse: async (courseId: number, userId: number) => {
-    const response = await axios.post(
+    const response = await api.post(
       `/progress/${courseId}/assign?userId=${userId}`
     );
     return response;
@@ -13,36 +13,34 @@ export default {
 
   // самописный эндпоинт, такого нет на беке
   excludeUserFromCourse: async (courseId: number, userId: number) => {
-    const response = await axios.delete(
+    const response = await api.delete(
       `/progress/${courseId}/exclude?userId=${userId}`
     );
     return response;
   },
 
   getUserCourses: async () => {
-    const response = await axios.get(`/progress/courses`);
+    const response = await api.get(`/progress/courses`);
     return response;
   },
 
   getCourseProgress: async (courseId: number) => {
-    const response = await axios.get(`/progress/course/${courseId}`);
+    const response = await api.get(`/progress/course/${courseId}`);
     return response;
   },
 
   getLastVisitedLessonInCourse: async (courseId: number) => {
-    const response = await axios.get(
-      `/progress/course/${courseId}/last-visited`
-    );
+    const response = await api.get(`/progress/course/${courseId}/last-visited`);
     return response;
   },
 
   getNextLesson: async (courseId: number) => {
-    const response = await axios.get(`/progress/course/${courseId}/next`);
+    const response = await api.get(`/progress/course/${courseId}/next`);
     return response;
   },
 
   completeLesson: async (lesson: AnyLesson) => {
-    const response = await axios.patch(
+    const response = await api.patch(
       `/progress/lessons/${lesson.id}/complete`,
       lesson
     );

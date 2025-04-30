@@ -24,7 +24,7 @@ const SavePanel: React.FC<SavePanelProps> = ({ handleSave }) => {
       <Button
         variant="contained"
         onClick={handleSave}
-        sx={{ mr: "calc((100vw - 250px)/10)" }}
+        sx={{ mr: "calc((100vw - 250px)/10)", bgcolor: "button.primary" }}
       >
         Сохранить
       </Button>

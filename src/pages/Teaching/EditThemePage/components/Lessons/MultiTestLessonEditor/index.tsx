@@ -163,7 +163,7 @@ const MultiTestLessonEditor: React.FC<MultiTestLessonEditorProps> = ({
         variant="outlined"
         startIcon={<AddIcon />}
         onClick={addAnswer}
-        sx={{ mt: 1 }}
+        sx={{ mt: 1, color: "button.primary", borderColor: "button.primary" }}
       >
         Добавить вариант ответа
       </Button>

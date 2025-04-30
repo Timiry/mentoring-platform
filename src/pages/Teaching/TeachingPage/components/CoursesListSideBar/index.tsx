@@ -16,7 +16,11 @@ const CoursesListSideBar: React.FC<CoursesListSideBarProps> = ({
       <List>
         {/* мб добавить картинку для красоты */}
         <ListItem>
-          <Button variant="outlined" onClick={handleOpenDialog}>
+          <Button
+            variant="outlined"
+            onClick={handleOpenDialog}
+            sx={{ color: "button.primary", borderColor: "button.primary" }}
+          >
             Создать курс
           </Button>
         </ListItem>

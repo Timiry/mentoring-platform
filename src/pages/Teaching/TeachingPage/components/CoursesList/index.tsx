@@ -73,9 +73,9 @@ const CoursesList: React.FC<CourseListProps> = ({
           >
             <ListItemIcon>
               <img
-                src={"/logo.png"}
+                src={course.logo}
                 alt={course.title}
-                style={{ width: 50, height: 50 }}
+                style={{ width: 50, height: 50, borderRadius: "4px" }}
               />
             </ListItemIcon>
             <ListItemText
