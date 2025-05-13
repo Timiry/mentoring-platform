@@ -7,7 +7,6 @@ import ChatMessages from "../ChatMessages";
 import ChatInput from "../ChatInput";
 import { useParams } from "react-router-dom";
 import { communicationApi } from "../../../../api";
-import chekTokens from "../../../../services/CheckTokens";
 import ChatHeader from "../ChatHeader";
 
 const Chat = () => {
@@ -32,7 +31,6 @@ const Chat = () => {
         alert("Чат не существует");
         return <div>Выберите чат из списка</div>;
       } else {
-        chekTokens();
         const response = communicationApi.getChatMessages(chatId, 0, 20);
         response
           .then((result) => {

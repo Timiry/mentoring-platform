@@ -3,5 +3,13 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "module": "commonjs", // или "esnext", если вы хотите использовать ES модули
+    "target": "es6", // или другой целевой стандарт
+    "esModuleInterop": true, // позволяет использовать CommonJS модули
+    "skipLibCheck": true, // пропустить проверку типов в библиотеках
+    "strict": true, // включает строгий режим
+    "jsx": "react" // если вы используете React
+  }
 }

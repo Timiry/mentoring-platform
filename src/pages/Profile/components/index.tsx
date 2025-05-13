@@ -22,7 +22,6 @@ import * as Yup from "yup";
 import { accountApi, mentorCatalogApi } from "../../../api";
 import { AccountData, MentorDataToCreate, RawMentorData } from "../../../types";
 import InvalidInputMessage from "../../../components/InvalidInputMessage";
-import chekTokens from "../../../services/CheckTokens";
 import MuiSwitch from "../../../components/MuiSwitch";
 
 const validationSchema = Yup.object().shape({
@@ -74,7 +73,6 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        chekTokens();
         const { data } = await accountApi.getUserData();
         setInitialValues(data);
 
@@ -105,7 +103,6 @@ const Profile: React.FC = () => {
   const handleProfileSubmit = async (values: AccountData) => {
     try {
       setIsLoading(true);
-      chekTokens();
 
       await accountApi.updateUserData({
         firstName: values.firstName,

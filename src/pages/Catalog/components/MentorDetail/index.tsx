@@ -13,7 +13,6 @@ import {
 import { Course, MentorDataToShow } from "../../../../types";
 import { communicationApi, coursesApi } from "../../../../api";
 import { useNavigate } from "react-router-dom";
-import chekTokens from "../../../../services/CheckTokens";
 
 interface MentorDetailProps {
   mentor: MentorDataToShow;
@@ -27,7 +26,6 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
   useEffect(() => {
     const fetchMentorCourses = async () => {
       try {
-        chekTokens();
         const coursesRequest = await coursesApi.getCoursesByMentorId(
           mentor.userId
         );
@@ -48,7 +46,6 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
 
   const openChat = async (userId: number) => {
     try {
-      chekTokens();
       // Получаем все чаты текущего пользователя
       const response = await communicationApi.getUserChats();
 
@@ -70,7 +67,6 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
 
         // Если не нашли чат, создаем новый
         if (!chatFound) {
-          chekTokens();
           const responseCreate = await communicationApi.createChat();
           if (responseCreate.status === 200) {
             const chatId = responseCreate.data.chatId;

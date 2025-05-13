@@ -6,7 +6,6 @@ import {
   Box,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import chekTokens from "../../../../services/CheckTokens";
 import { communicationApi } from "../../../../api";
 import { useParams } from "react-router-dom";
 import { AccountData } from "../../../../types";
@@ -17,7 +16,6 @@ const ChatHeader = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      chekTokens();
       if (!chatId) return;
       const members = await communicationApi.getChatUsers(chatId);
       const currentUserId = Number(

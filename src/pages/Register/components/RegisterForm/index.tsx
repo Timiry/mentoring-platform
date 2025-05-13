@@ -13,7 +13,8 @@ import { useNavigate } from "react-router-dom";
 
 import InvalidInputMessage from "../../../../components/InvalidInputMessage";
 import Alert from "../../../../components/Alert";
-import axios, { securityApi } from "../../../../api";
+import { securityApi } from "../../../../api";
+import axios from "axios";
 
 const RegisterForm: React.FC = () => {
   const [open, setOpen] = useState(false);

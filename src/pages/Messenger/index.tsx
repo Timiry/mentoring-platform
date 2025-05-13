@@ -6,7 +6,6 @@ import ChatList from "./components/ChatList";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { communicationApi } from "../../api";
-import chekTokens from "../../services/CheckTokens";
 import { AccountData } from "../../types";
 
 const MessengerPage = () => {
@@ -24,7 +23,6 @@ const MessengerPage = () => {
   useEffect(() => {
     const fetchChatData = async () => {
       try {
-        chekTokens();
         const userChats = await communicationApi.getUserChats();
 
         const chatDataPromises = userChats.data.content.map(

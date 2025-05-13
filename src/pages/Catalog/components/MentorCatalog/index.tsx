@@ -3,7 +3,6 @@ import { Box, Typography, TextField } from "@mui/material";
 import { MentorDataToShow } from "../../../../types";
 import MentorCard from "../MentorCard";
 import { mentorCatalogApi } from "../../../../api";
-import chekTokens from "../../../../services/CheckTokens";
 
 const MentorCatalog: React.FC = () => {
   const [mentors, setMentors] = useState<MentorDataToShow[]>([]);
@@ -12,7 +11,6 @@ const MentorCatalog: React.FC = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        chekTokens();
         const data =
           searchTerm.trim() !== ""
             ? await mentorCatalogApi.getMentorsBySpecialization(searchTerm)
