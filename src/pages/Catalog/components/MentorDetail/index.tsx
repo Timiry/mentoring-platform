@@ -26,7 +26,7 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
   useEffect(() => {
     const fetchMentorCourses = async () => {
       try {
-        const coursesRequest = await coursesApi.getCoursesByMentorId(
+        const coursesRequest = await coursesApi.getCoursesByAuthorId(
           mentor.userId
         );
         setCourses(coursesRequest.data);
