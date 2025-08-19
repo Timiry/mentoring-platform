@@ -184,8 +184,8 @@ const EditTheme: React.FC<EditThemeProps> = ({
       console.log("В теме должен быть хотя бы 1 урок");
       return;
     }
-    if (lesson.id != undefined) {
-      const id = lesson.id;
+    if (lesson.lessonId != undefined) {
+      const id = lesson.lessonId;
       setDeletedLessonsIds((prev) => [...prev, id]);
     }
     const updatedTheme = {

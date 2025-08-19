@@ -4,13 +4,13 @@ import {
   CloudUpload as CloudUploadIcon,
   Image as ImageIcon,
 } from "@mui/icons-material";
-import { CourseToCreate } from "../../../../types";
+import { Course } from "../../../../types";
 import { coursesApi } from "../../../../api";
 import { useParams } from "react-router-dom";
 import SavePanel from "../../../../components/SavePanel";
 
 interface EditCourseDescriptionProps {
-  initialCourse: CourseToCreate; // Используйте initialCourse как часть пропсов
+  initialCourse: Course;
 }
 
 const EditCourseDescription: React.FC<EditCourseDescriptionProps> = ({

@@ -27,7 +27,9 @@ const CourseStructure: React.FC<CourseStructureProps> = ({
       }}
     >
       <Link
-        href={`/courses/${modules[0].courseId}/edit-content`}
+        href={
+          modules.length ? `/courses/${modules[0].courseId}/edit-content` : ""
+        }
         sx={{
           color: "#ffffff",
           textDecoration: "none",

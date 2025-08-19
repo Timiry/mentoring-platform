@@ -41,7 +41,7 @@ export default {
 
   completeLesson: async (lesson: AnyLesson) => {
     const response = await api.patch(
-      `/progress/lessons/${lesson.id}/complete`,
+      `/progress/lessons/${lesson.lessonId}/complete`,
       lesson
     );
     return response;

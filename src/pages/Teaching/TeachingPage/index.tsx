@@ -8,51 +8,14 @@ import { coursesApi } from "../../../api";
 
 const TeachingPage: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
-  const [courses, setCourses] = useState<Course[]>([
-    {
-      id: 1,
-      title: "Курс 1",
-      description: "Описание 1",
-      authorId: 1,
-      completionTimeInHours: 50,
-      createdAt: "2024-12-03T10:15:30+01:00",
-      //logo: "/logo.png",
-    },
-    {
-      id: 2,
-      title: "Курс 2",
-      description: "Описание 2",
-      authorId: 1,
-      completionTimeInHours: 50,
-      createdAt: "2024-12-03T10:15:30+01:00",
-      //logo: "/logo.png",
-    },
-    {
-      id: 3,
-      title: "Курс 3",
-      description: "Описание 3",
-      authorId: 1,
-      completionTimeInHours: 50,
-      createdAt: "2024-12-03T10:15:30+01:00",
-      //logo: "/logo.png",
-    },
-    {
-      id: 4,
-      title: "Курс 4",
-      description: "Описание 1",
-      authorId: 1,
-      completionTimeInHours: 50,
-      createdAt: "2024-12-03T10:15:30+01:00",
-      //logo: "/logo.png",
-    },
-  ]);
-
-  const authorId = 1; // временно
+  const [courses, setCourses] = useState<Course[]>([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const coursesResponse = await coursesApi.getCoursesByMentorId(authorId); // нерабочая заглушка
+        const coursesResponse = await coursesApi.getCoursesByAuthorId(
+          localStorage.userId
+        );
         setCourses(coursesResponse.data);
       } catch (error) {
         console.error("Ошибка при получении данных курса:", error);
@@ -60,7 +23,7 @@ const TeachingPage: React.FC = () => {
     };
 
     fetchCourses();
-  }, [authorId]);
+  }, []);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);

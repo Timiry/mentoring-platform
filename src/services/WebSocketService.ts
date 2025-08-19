@@ -1,6 +1,5 @@
 import * as Stomp from "stompjs";
 import { communicationApi } from "../api";
-import chekTokens from "./CheckTokens";
 
 class WebSocketService {
   private stompClient: Stomp.Client | null = null;
@@ -41,7 +40,6 @@ class WebSocketService {
     callback: (message: Stomp.Message) => void,
     userId: number
   ) {
-    chekTokens();
     const responseCreate = communicationApi.createChat();
     responseCreate
       .then((result) => {

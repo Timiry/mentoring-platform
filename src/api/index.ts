@@ -2,15 +2,19 @@ import axios from "axios";
 
 // Создаем экземпляр Axios с базовыми настройками
 const api = axios.create({
-  baseURL: import.meta.env.VITE_DEV_URL + "/api/v1",
+  baseURL: import.meta.env.VITE_DEV_URL + "/api/v1/",
 });
 
 // Добавляем интерцептор запросов (добавляет Access Token к каждому запросу)
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
   if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
-    config.headers["Content-Type"] = "application/json";
+    if (!config.headers["Authorization"]) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    if (!config.headers["Content-Type"]) {
+      config.headers["Content-Type"] = "application/json";
+    }
     config.headers["Accept"] = "*/*";
   }
   return config;

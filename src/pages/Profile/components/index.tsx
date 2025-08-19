@@ -22,7 +22,6 @@ import * as Yup from "yup";
 import { accountApi, mentorCatalogApi } from "../../../api";
 import { AccountData, MentorDataToCreate, RawMentorData } from "../../../types";
 import InvalidInputMessage from "../../../components/InvalidInputMessage";
-import chekTokens from "../../../services/CheckTokens";
 import MuiSwitch from "../../../components/MuiSwitch";
 
 const validationSchema = Yup.object().shape({
@@ -74,21 +73,8 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        chekTokens();
         const { data } = await accountApi.getUserData();
         setInitialValues(data);
-
-        // Проверяем, является ли пользователь ментором
-        if (data.userStatus === "mentor") {
-          const mentorData = await mentorCatalogApi.getMentorById(data.id);
-          setMentorValues({
-            userId: data.id,
-            shortAboutMe: mentorData.data.shortAboutMe,
-            longAboutMe: mentorData.data.longAboutMe,
-            specializations: mentorData.data.specializations.join(", "),
-          });
-          setMentorStatus(true);
-        }
       } catch (error) {
         console.error("Ошибка при получении данных:", error);
         setSnackbarMessage("Ошибка при получении данных");
@@ -96,6 +82,19 @@ const Profile: React.FC = () => {
         setOpenSnackbar(true);
       } finally {
         setIsLoading(false);
+      }
+      // Получаем менторскую информацию
+      const mentorData = await mentorCatalogApi.getMentorById(
+        localStorage.userId
+      );
+      if (mentorData.status === 200) {
+        setMentorValues({
+          userId: localStorage.userId,
+          shortAboutMe: mentorData.data.shortAboutMe,
+          longAboutMe: mentorData.data.longAboutMe,
+          specializations: mentorData.data.specializations.join(", "),
+        });
+        setMentorStatus(true);
       }
     };
 
@@ -105,7 +104,6 @@ const Profile: React.FC = () => {
   const handleProfileSubmit = async (values: AccountData) => {
     try {
       setIsLoading(true);
-      chekTokens();
 
       await accountApi.updateUserData({
         firstName: values.firstName,
@@ -132,7 +130,6 @@ const Profile: React.FC = () => {
   const handleMentorSubmit = async (values: RawMentorData) => {
     try {
       setIsLoading(true);
-      // chekTokens();
 
       const mentorData: MentorDataToCreate = {
         ...values,

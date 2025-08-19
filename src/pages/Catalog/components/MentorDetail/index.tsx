@@ -13,7 +13,6 @@ import {
 import { Course, MentorDataToShow } from "../../../../types";
 import { communicationApi, coursesApi } from "../../../../api";
 import { useNavigate } from "react-router-dom";
-import chekTokens from "../../../../services/CheckTokens";
 
 interface MentorDetailProps {
   mentor: MentorDataToShow;
@@ -27,8 +26,7 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
   useEffect(() => {
     const fetchMentorCourses = async () => {
       try {
-        chekTokens();
-        const coursesRequest = await coursesApi.getCoursesByMentorId(
+        const coursesRequest = await coursesApi.getPublishedCoursesByAuthor(
           mentor.userId
         );
         setCourses(coursesRequest.data);
@@ -40,15 +38,8 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
     fetchMentorCourses();
   }, [mentor]);
 
-  const handleApply = (courseId: number) => {
-    // Обработчик подачи заявки на курс
-    console.log(`Заявка на курс ${courseId} отправлена`);
-    // В реальном приложении здесь будет вызов API
-  };
-
   const openChat = async (userId: number) => {
     try {
-      chekTokens();
       // Получаем все чаты текущего пользователя
       const response = await communicationApi.getUserChats();
 
@@ -61,7 +52,6 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
           // Проверяем, есть ли потенциальный собеседник в участниках чата
           const members = chat.members;
           if (members.includes(userId)) {
-            console.log("Нашелся же", chat.chatId);
             navigate(`/messenger/${chat.chatId}`); // Если участник найден, отображаем этот чат
             chatFound = true;
             break; // Выходим из цикла, так как чат найден
@@ -70,7 +60,6 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
 
         // Если не нашли чат, создаем новый
         if (!chatFound) {
-          chekTokens();
           const responseCreate = await communicationApi.createChat();
           if (responseCreate.status === 200) {
             const chatId = responseCreate.data.chatId;
@@ -110,9 +99,6 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
           <Typography variant="body2" color="textSecondary">
             Специализации: {mentor.specializations.join(", ")}
           </Typography>
-          {/* <Typography variant="body2" color="textSecondary">
-                        Количество студентов: {mentor.studentsCount}
-                    </Typography> */}
         </Box>
         <Box width="100%" display="flex" justifyContent="end">
           <Button
@@ -125,7 +111,7 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
           </Button>
         </Box>
       </Box>
-      <Box display="flex">
+      <Box display="flex" justifyContent="space-between">
         <Box maxWidth="450px">
           <Typography variant="h6" mb={2}>
             Краткая информация:
@@ -147,23 +133,7 @@ const MentorDetail: React.FC<MentorDetailProps> = ({ mentor }) => {
           <List sx={{ width: "100%", bgcolor: "background.paper" }}>
             {courses.map((course) => (
               <React.Fragment key={course.id}>
-                <ListItem
-                  alignItems="flex-start"
-                  secondaryAction={
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => handleApply(course.id)}
-                      sx={{
-                        color: "button.primary",
-                        borderColor: "button.primary",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Подать заявку
-                    </Button>
-                  }
-                >
+                <ListItem alignItems="flex-start">
                   <ListItemAvatar>
                     <Avatar alt={course.title} src={course?.logo} />
                   </ListItemAvatar>

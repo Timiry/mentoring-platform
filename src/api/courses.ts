@@ -19,8 +19,25 @@ export default {
     return response;
   },
 
-  getCoursesByMentorId: async (mentorId: number) => {
-    const response = await api.get(`/courses?mentor=${mentorId}`); // возможно изменить
+  getFullCourseById: async (courseId: number) => {
+    const response = await api.get(`/courses/full/${courseId}`);
+    return response;
+  },
+
+  getCoursesByAuthorId: async (authorId: number) => {
+    const response = await api.get(`/courses/byAuthor/${authorId}`);
+    return response;
+  },
+
+  getPublishedCoursesByAuthor: async (authorId: number) => {
+    const response = await api.get(`/courses/byAuthor/published/${authorId}`);
+    return response;
+  },
+
+  publishCourse: async (courseId: number) => {
+    const response = await api.patch(
+      `/courses/publish/${courseId}?isPublished=true`
+    );
     return response;
   },
 

@@ -12,33 +12,36 @@ const EducationPage: React.FC = () => {
     ExtendCourseProgress[]
   >([]);
 
-  const userId = 1; // временно
-
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const coursesResponse = await progressApi.getUserCourses();
         setCourses(coursesResponse.data);
 
-        for (const course of courses) {
+        let progress: ExtendCourseProgress[] = [];
+        for (const course of coursesResponse.data) {
           const progressResponse = await progressApi.getCourseProgress(
             course.id
           );
-          setCoursesProgress([...coursesProgress, progressResponse.data]);
+          progress = [...progress, progressResponse.data];
         }
+        setCoursesProgress(progress);
       } catch (error) {
         console.error("Ошибка при получении данных курса:", error);
       }
     };
 
     fetchCourses();
-  }, [courses, coursesProgress, userId]);
+  }, []);
 
   const handleConfirmLeave = (selectedCourse: Course | null) => {
     // Отправка запроса покидания курса после подтверждения
     if (selectedCourse !== null) {
       try {
-        progressApi.excludeUserFromCourse(selectedCourse.id, userId);
+        progressApi.excludeUserFromCourse(
+          selectedCourse.id,
+          localStorage.userId
+        );
         setCourses(courses.filter((course) => course.id !== selectedCourse.id));
         console.log(`Курс с ID ${selectedCourse?.id} удален.`);
       } catch (error) {
