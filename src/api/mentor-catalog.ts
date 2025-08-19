@@ -7,16 +7,15 @@ export default {
     return response;
   },
 
-  // такого апи нет
   getMentorById: async (mentorId: number) => {
-    const response = await api.get(`mentors/${mentorId}`);
+    const response = await api.get(`/mentors/internal/${mentorId}`);
     return response;
   },
 
-  // и такого апи нет
+  // такого апи нет
   updateMentor: async (mentorData: MentorDataToCreate) => {
-    const response = await api.post(
-      `/mentors/${mentorData.userId}`,
+    const response = await api.patch(
+      `/mentors/internal/${mentorData.userId}`,
       mentorData
     );
     return response;
@@ -31,6 +30,24 @@ export default {
 
   getAllMentors: async () => {
     const response = await api.get(`mentors/catalog`);
+    return response;
+  },
+
+  isStudentHasMentor: async (studentId: number, mentorId: number) => {
+    //   const response = await api.get(
+    //     `/mentors/internal/${mentorId}/students/${studentId}/is-student`
+    //   );
+    //   return response;
+    return { data: true, bla: { studentId, mentorId } };
+  },
+
+  addStudentToMentor: async (mentorId: number, studentId: number) => {
+    const response = await api.patch(
+      `/mentors/internal/${mentorId}/students/add`,
+      {
+        studentId: studentId,
+      }
+    );
     return response;
   },
 };

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CourseStructure from "./components/CourseStructure";
 import EditTheme from "./components/EditTheme";
-import { Module, Theme } from "../../../types";
+import { Module, ModuleToGet, Theme, ThemeToGet } from "../../../types";
 import { coursesApi } from "../../../api";
 import NoMarginsLayout from "../../../components/layout/NoMargins";
 
@@ -10,9 +10,69 @@ const EditThemePage: React.FC = () => {
   const { themeId } = useParams<{ themeId: string }>();
   const currentThemeId = themeId ? parseInt(themeId) : 1;
 
-  // Пример данных курса
-  const courseTitle = "Основы Data Science с Python";
+  const [courseTitle, setCourseTitle] = useState("");
   const [modules, setModules] = useState<Module[]>([]);
+
+  useEffect(() => {
+    const getModulesWithThemesByCourseId = async (currentThemeId: number) => {
+      try {
+        // тема
+        const theme = (await coursesApi.getThemeById(currentThemeId)).data;
+        const module = (await coursesApi.getModuleById(theme.moduleId)).data;
+        // Получаем информацию курса
+        const course = (await coursesApi.getCourseById(module.courseId)).data;
+        setCourseTitle(course.title);
+
+        // Получаем модули курса
+        const modulesResponse = await coursesApi.getModulesByCourse(course.id);
+        const modules: ModuleToGet[] = modulesResponse.data;
+
+        // Получаем все темы курса
+        const themesResponse = await coursesApi.getThemeByCourse(course.id);
+        const themes: ThemeToGet[] = themesResponse.data;
+
+        // Итерируемся по каждому модулю и добавляем соответствующие темы
+        const modulesWithThemes = await Promise.all(
+          modules.map(async (module) => {
+            const moduleThemes = await Promise.all(
+              themes
+                .filter((theme) => theme.moduleId === module.id)
+                .map(async (theme) => {
+                  const fullLessons = await Promise.all(
+                    theme.lessons.map((lesson) =>
+                      coursesApi
+                        .getLessonById(lesson.lessonId)
+                        .then((res) => res.data)
+                    )
+                  );
+                  // Сортируем уроки по ordinalNumber
+                  const sortedLessons = [...fullLessons].sort(
+                    (a, b) => a.ordinalNumber - b.ordinalNumber
+                  );
+                  return {
+                    ...theme,
+                    fullLessons: sortedLessons,
+                    wasChanged: false,
+                  };
+                })
+            );
+            return {
+              ...module,
+              newThemeTitle: "",
+              themes: moduleThemes,
+              wasChanged: false,
+            };
+          })
+        );
+
+        setModules(modulesWithThemes);
+      } catch (error) {
+        console.error("Ошибка при получении модулей и тем:", error);
+      }
+    };
+
+    getModulesWithThemesByCourseId(currentThemeId);
+  }, [currentThemeId]);
 
   const changeTheme = (updatedTheme: Theme) => {
     const updatedModules = modules.map((module) => {
@@ -33,7 +93,7 @@ const EditThemePage: React.FC = () => {
       return; // Выход из функции, если тема не найдена
     }
     try {
-      coursesApi.updateTheme(themeId, theme);
+      //coursesApi.updateTheme(themeId, theme);
       // удаление уроков
       deletedLessonsIds.forEach((id) => {
         coursesApi.deleteLesson(id);
@@ -41,14 +101,14 @@ const EditThemePage: React.FC = () => {
 
       //создание и сохранение уроков
       theme.fullLessons.forEach(async (lesson) => {
-        if (!lesson.id) {
+        if (!lesson.lessonId) {
           const newLessonRequest = await coursesApi.createLesson(lesson);
-          lesson.id = newLessonRequest.data.id;
+          lesson.lessonId = newLessonRequest.data.id;
           console.log(
             `Создание нового урока: ${lesson.ordinalNumber} ${lesson.type}`
           );
         } else if (lesson.wasChanged) {
-          coursesApi.updateLesson(lesson.id, lesson);
+          coursesApi.updateLesson(lesson.lessonId, lesson);
           console.log(
             `Изменение урока: ${lesson.ordinalNumber} ${lesson.type}`
           );
@@ -57,7 +117,6 @@ const EditThemePage: React.FC = () => {
       });
     } catch (error) {
       console.error("Ошибка при сохранении темы:", error);
-      throw error; // Пробрасываем ошибку дальше
     }
   };
 

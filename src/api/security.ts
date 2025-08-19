@@ -5,15 +5,16 @@ import axios from "axios";
 
 export default {
   registerUser: async (userData: RegisterData) => {
-    const axiosInstance = axios.create();
-    delete axiosInstance.defaults.headers.common["Authorization"];
-    const response = await axiosInstance.post(`/auth/register`, userData);
+    const axiosInstance = axios.create({
+      baseURL: import.meta.env.VITE_DEV_URL + "/api/v1/",
+    });
+    const response = await axiosInstance.post(`auth/register`, userData);
     return response;
   },
 
   login: async (userData: LoginData, data: { deviceId: UUID }) => {
     const base64Credentials = btoa(`${userData.login}:${userData.password}`);
-    const response = await api.post(`/auth/login`, data, {
+    const response = await api.post(`auth/login`, data, {
       headers: {
         Authorization: `Basic ${base64Credentials}`,
       },
@@ -22,7 +23,7 @@ export default {
   },
 
   logout: async () => {
-    const response = await api.post(`/auth/logout`, null, {
+    const response = await api.post(`auth/logout`, null, {
       headers: {
         Authorization: "Bearer" + localStorage.refreshToken,
       },
@@ -31,7 +32,7 @@ export default {
   },
 
   refresh: async () => {
-    const response = await api.post(`/auth/refresh`, null, {
+    const response = await api.post(`auth/refresh`, null, {
       headers: {
         Authorization: "Bearer " + localStorage.refreshToken,
       },

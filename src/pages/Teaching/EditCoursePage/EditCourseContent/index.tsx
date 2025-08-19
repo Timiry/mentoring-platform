@@ -12,7 +12,13 @@ import {
   Link,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Module, ModuleToGet, Theme, ThemeToGet } from "../../../../types";
+import {
+  LessonType,
+  Module,
+  ModuleToGet,
+  Theme,
+  ThemeToGet,
+} from "../../../../types";
 import { coursesApi } from "../../../../api";
 import SavePanel from "../../../../components/SavePanel";
 
@@ -26,11 +32,11 @@ const EditCourseContent: React.FC = () => {
       try {
         // Получаем модули курса
         const modulesResponse = await coursesApi.getModulesByCourse(courseId);
-        const modules: ModuleToGet[] = modulesResponse.data; // Предполагаем, что данные находятся в response.data
+        const modules: ModuleToGet[] = modulesResponse.data;
 
         // Получаем все темы курса
         const themesResponse = await coursesApi.getThemeByCourse(courseId);
-        const themes: ThemeToGet[] = themesResponse.data; // Предполагаем, что данные находятся в response.data
+        const themes: ThemeToGet[] = themesResponse.data;
 
         // Итерируемся по каждому модулю и добавляем соответствующие темы
         const modulesWithThemes = modules.map((module) => {
@@ -38,7 +44,6 @@ const EditCourseContent: React.FC = () => {
             .filter((theme) => theme.moduleId === module.id) // Фильтруем темы по moduleId
             .map((theme) => ({
               ...theme,
-              lessons: [], // Инициализируем массив уроков, если он отсутствует
               fullLessons: [], // Инициализируем массив полных уроков
               wasChanged: false,
             }));
@@ -51,10 +56,24 @@ const EditCourseContent: React.FC = () => {
           };
         });
 
-        setModules(modulesWithThemes); // Возвращаем массив модулей с их темами
+        // // получаем весь курс (чета тут выдаются не все модули хз)
+        // const fullCourseResponse = await coursesApi.getFullCourseById(courseId);
+        // const modules: Module[] = fullCourseResponse.data.modules;
+        // const fullModules = modules.map((module) => ({
+        //   ...module,
+        //   newThemeTitle: "", // Инициализируем новое название темы
+        //   wasChanged: false,
+        //   themes: module.themes.map((theme) => ({
+        //     ...theme,
+        //     lessons: [], // Инициализируем массив уроков, если он отсутствует
+        //     fullLessons: [], // Инициализируем массив полных уроков
+        //     wasChanged: false,
+        //   })),
+        // }));
+
+        setModules(modulesWithThemes);
       } catch (error) {
         console.error("Ошибка при получении модулей и тем:", error);
-        throw error; // Пробрасываем ошибку дальше
       }
     };
 
@@ -76,7 +95,7 @@ const EditCourseContent: React.FC = () => {
       newThemeTitle: "",
       ordinalNumber: modules.length + 1,
       description: "",
-      courseId: 0,
+      courseId: curCourseId,
       wasChanged: false,
     };
     setModules([...modules, newModule]);
@@ -106,9 +125,9 @@ const EditCourseContent: React.FC = () => {
       lessons: [],
       ordinalNumber: modules[moduleIndex].themes.length + 1,
       description: "",
-      moduleId: 0,
+      moduleId: modules[moduleIndex].id,
       fullLessons: [],
-      contentType: "",
+      contentType: "TEXT",
       wasChanged: false,
     };
     const updatedModules = [...modules];
@@ -150,6 +169,11 @@ const EditCourseContent: React.FC = () => {
         console.log(`Удаление темы с id: ${id}`);
       });
 
+      setDeletedIds({
+        moduleIds: [],
+        themeIds: [],
+      });
+
       // Проход по всему списку модулей
       // Отправка запросов на создание модулей и тем без id
       // А также отправка запросов на изменение названий модулей с id
@@ -168,8 +192,17 @@ const EditCourseContent: React.FC = () => {
         module.themes.forEach(async (theme) => {
           if (!theme.id) {
             // Отправка запроса на создание новой темы
-            const newThemeRequest = await coursesApi.createTheme(theme);
+            const newThemeRequest = await coursesApi.createTheme({
+              ...theme,
+              moduleId: module.id,
+            });
             theme.id = newThemeRequest.data.id;
+            coursesApi.createLesson({
+              ordinalNumber: 1,
+              themeId: theme.id,
+              type: LessonType.HTML,
+              html: "<p>Вы можете добавить сюда текст, математические формулы, примеры кода и многое другое.</p>",
+            });
             console.log(`Создание новой темы: ${theme.title}`);
           } else if (theme.wasChanged) {
             // Отправка запроса на изменение сохраненной темы

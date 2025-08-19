@@ -67,17 +67,17 @@ export interface ChatData {
 }
 
 export enum LessonType {
-  HTML,
-  VIDEO,
-  TEST,
-  MULTI_TEST,
-  CODE,
+  HTML = "HTML",
+  VIDEO = "VIDEO",
+  TEST = "TEST",
+  MULTI_TEST = "MULTI_TEST",
+  CODE = "CODE",
 }
 
 export interface LessonToCreate {
   ordinalNumber: number;
   type: LessonType;
-  themeId: number;
+  themeId?: number;
 }
 
 export interface HtmlLessonToCreate extends LessonToCreate {
@@ -113,7 +113,7 @@ export type AnyLessonToCreate =
   | CodeLessonToCreate;
 
 export interface Lesson extends LessonToCreate {
-  id?: number;
+  lessonId?: number;
   wasChanged: boolean;
 }
 
@@ -155,7 +155,7 @@ export type AnyLesson =
   | CodeLesson;
 
 export interface ShortLesson {
-  id: number;
+  lessonId: number;
   ordinalNumber: number;
 }
 
@@ -163,7 +163,7 @@ export interface ThemeToCreate {
   title: string;
   description: string;
   ordinalNumber: number;
-  moduleId: number;
+  moduleId?: number;
   contentType: string;
 }
 
@@ -205,6 +205,7 @@ export interface Course extends CourseToCreate {
   id: number;
   createdAt: string;
   authorId: number;
+  isPublished: boolean;
 }
 
 export interface LessonProgress {

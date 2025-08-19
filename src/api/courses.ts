@@ -29,6 +29,18 @@ export default {
     return response;
   },
 
+  getPublishedCoursesByAuthor: async (authorId: number) => {
+    const response = await api.get(`/courses/byAuthor/published/${authorId}`);
+    return response;
+  },
+
+  publishCourse: async (courseId: number) => {
+    const response = await api.patch(
+      `/courses/publish/${courseId}?isPublished=true`
+    );
+    return response;
+  },
+
   updateCourse: async (courseId: number, course: CourseToCreate) => {
     const response = await api.put(`/courses/${courseId}`, course);
     return response;

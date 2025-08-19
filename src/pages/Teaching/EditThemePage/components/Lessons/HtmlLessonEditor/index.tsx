@@ -44,11 +44,6 @@ const HtmlLessonEditor: React.FC<HtmlLessonEditorProps> = ({
         editorState={editorState}
         onEditorStateChange={handleHtmlChange}
       />
-      <div
-        dangerouslySetInnerHTML={{
-          __html: convertToHTML(editorState.getCurrentContent()),
-        }}
-      ></div>
     </Box>
   );
 };

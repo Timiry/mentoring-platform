@@ -15,7 +15,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import InvalidInputMessage from "../../../../components/InvalidInputMessage";
 import Alert from "../../../../components/Alert";
-import axios, { securityApi } from "../../../../api";
+import { securityApi } from "../../../../api";
+import axios from "axios";
 
 const LoginForm: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -54,6 +55,9 @@ const LoginForm: React.FC = () => {
         localStorage.refreshToken = result.data.refreshToken;
         localStorage.accessTokenExpiry = result.data.accessTokenExpiry;
         localStorage.refreshTokenExpiry = result.data.refreshTokenExpiry;
+        localStorage.userId = Number(
+          JSON.parse(atob(localStorage.accessToken.split(".")[1])).sub
+        );
         console.log(result);
         navigate("/");
       }
